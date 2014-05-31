@@ -15,6 +15,7 @@
  */
 package xxx.yyy.sys.record;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -41,6 +42,24 @@ public class RecordTest extends BaseTest {
     @Autowired
     OperatingRecordDao operatingRecordDao;
 
+
+    @Before
+    public void insert(){
+        OperatingRecord op = new OperatingRecord();
+        op.setEndDate(new Date());
+        op.setIp("dddd");
+        op.setModule("凤飞飞");
+        op.setUsername("ddjdjf");
+        op.setMethod("djdjd");
+        op.setOperatingTarget("djdjdj");
+        op.setStartDate(new Date());
+        op.setState(State.Enable.getValue());
+        operatingRecordDao.save(op);
+        List<OperatingRecord> all = operatingRecordDao.findAll();
+        assertThat(all).isNotEmpty();
+    }
+
+
     @Test
     public void searData(){
         assertThat(operatingRecordDao.findAll(" ip is not null")).isNotEmpty();
@@ -62,20 +81,5 @@ public class RecordTest extends BaseTest {
     }
 
 
-    @Test
-    public void testRecord(){
-        OperatingRecord op = new OperatingRecord();
-        op.setEndDate(new Date());
-        op.setIp("dddd");
-        op.setModule("凤飞飞");
-        op.setUsername("ddjdjf");
-        op.setMethod("djdjd");
-        op.setOperatingTarget("djdjdj");
-        op.setStartDate(new Date());
-        op.setState(State.Enable.getValue());
-        operatingRecordDao.save(op);
-        List<OperatingRecord> all = operatingRecordDao.findAll();
-        assertThat(all).isNotEmpty();
-    }
 
 }
