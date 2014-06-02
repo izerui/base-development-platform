@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<description>apache shiro 配置</description>
+
+	<!-- 自定义shiro的realm数据库身份验证 -->
+	<bean id="jdbcAuthenticationRealm"
+		class="xxx.yyy.sys.security.realm.JdbcAuthenticationRealm">
+		<property name="name" value="jdbcAuthentication" />
+		<property name="credentialsMatcher" ref="credentialsMatcher"/>
+		<!-- 设置默认允许的permission -->
+		<property name="defaultPermissionString" value="security:change-password,security:home" />
+		<!-- 给每个登录系统用户设置默认角色,故不再需要数据库中再进行角色关联 -->
+		<!-- <property name="defaultRole" value="普通用户"/> -->
+		<!-- 授权缓存名称 -->
+		<property name="authorizationCacheName" value="shiroAuthorizationCache" />
+		<!-- 启用认证缓存，当用户登录一次后将不在查询数据库来获取用户信息，直接在从缓存获取 -->
+		<property name="authenticationCachingEnabled" value="false" />
+		<!-- 认证缓存名称 -->
+		<property name="authenticationCacheName" value="shiroAuthenticationCache" />
+	</bean>
+
+	<bean id="credentialsMatcher" class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+		<property name="hashAlgorithmName" value="MD5" />
+	</bean>
+
+	<!-- 安全认证过滤器 -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="filters">
+			<map>
+				<entry key="captchaAuthc" value-ref="captchaAuthenticationFilter" />
+                <entry key="mobileAuthc" value-ref="mobileAuthenticationFilter"/>
+			</map>
+		</property>
+		<!-- shiro的核心安全接口 -->
+		<property name="securityManager" ref="securityManager" />
+		<property name="loginUrl" value="/login" />
+	    <property name="successUrl" value="/home" />
+		<!-- 没有权限要跳转的链接 该连接是com.github.dactiv.showcase.web.SystemCommonController.unauthorized()方法 -->
+		<property name="unauthorizedUrl" value="/unauthorized" />
+		<!-- shiro连接约束配置,在这里使用自定义的动态获取资源类 -->
+		<property name="filterChainDefinitionMap" ref="chainDefinitionSectionMetaSource" />
+	</bean>
+
+	<!-- 自定义对 shiro的连接约束,结合shiroSecurityFilter实现动态获取资源 -->
+	<bean id="chainDefinitionSectionMetaSource"
+		class="xxx.yyy.sys.security.filter.ChainDefinitionSectionMetaSource">
+		<!-- 默认的连接配置 -->
+		<property name="filterChainDefinitions">
+			<value>
+                /favicon.ico = anon
+				/resources/** = anon
+				/getCaptcha = anon
+                /mobile/login/a = anon
+				/login = captchaAuthc
+				/logout = logout
+				/changePassword = authc,perms[security:home],perms[security:change-password]
+				/rest/** = noSessionCreation,authcBasic
+                /mobile/** = mobileAuthc
+				/** = authc,perms[security:home]
+			</value>
+		</property>
+	</bean>
+
+	<!-- 使用默认的WebSecurityManager -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<!-- realm认证和授权,从数据库读取资源 -->
+		<property name="realm" ref="jdbcAuthenticationRealm" />
+		<!-- cacheManager,集合spring缓存工厂 @see https://gist.github.com/izerui/8349365 -->
+		<property name="cacheManager" ref="cacheManager" />
+	</bean>
+
+	<!-- shiro对ehcache的缓存管理直接使用spring的缓存工厂 -->
+	<bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+		<property name="cacheManager" ref="ehCacheManagerFactory" />
+	</bean>
+
+</beans>

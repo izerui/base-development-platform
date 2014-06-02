@@ -131,8 +131,11 @@ public abstract class SpringMVCHolder {
 	 * @return {@link HttpServletRequest}
 	 */
 	public static HttpServletRequest  getRequest() {
-
-		return getServletRequestAttributes().getRequest();
+        HttpServletRequest request = null;
+        try{
+           request =  getServletRequestAttributes().getRequest();
+        }finally {}
+		return request;
 	}
 
 	/**

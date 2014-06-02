@@ -37,7 +37,7 @@
 
 
     <bean id="localeResolver"
-          class="xxx.yyy.framework.common.web.i18n.SessionLocaleResolver">
+          class="xxx.yyy.framework.common.application.i18n.SessionLocaleResolver">
         <property name="defaultLocale" value="${defaultLocale}" />
     </bean>
 

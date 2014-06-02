@@ -25,6 +25,7 @@ import xxx.yyy.framework.common.enumeration.State;
 import xxx.yyy.sys.base.BaseTest;
 import xxx.yyy.sys.base.model.OperatingRecord;
 import xxx.yyy.sys.base.repository.OperatingRecordDao;
+import xxx.yyy.sys.security.repository.RoleRepository;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -41,6 +42,9 @@ public class RecordTest extends BaseTest {
 
     @Autowired
     OperatingRecordDao operatingRecordDao;
+
+    @Autowired
+    RoleRepository roleRepository;
 
 
     @Before
@@ -77,6 +81,10 @@ public class RecordTest extends BaseTest {
         Pageable pageable = new PageRequest(0,3);
         Page<OperatingRecord> djdjd = operatingRecordDao.findAll(" ip in ?1 and x.method = ?2", pageable, set, "djdjd");
         assertThat(djdjd).isNotEmpty();
+
+        assertThat(roleRepository.queryUnDeleted().findAll("name = ?1","dhh")).isEmpty();
+        assertThat(roleRepository.getUserRoles("23")).isEmpty();
+
 
     }
 

@@ -10,7 +10,8 @@
 
     <modules>
         <module>platform-framework</module>
-        <module>platform-repository</module>
+        <module>platform-management</module>
+        <module>platform-security</module>
         <module>platform-web</module>
         <module>platform-test</module>
     </modules>

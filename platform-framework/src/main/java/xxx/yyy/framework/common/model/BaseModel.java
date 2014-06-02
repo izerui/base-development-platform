@@ -18,6 +18,7 @@ package xxx.yyy.framework.common.model;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Version;
 
 
 /**
@@ -29,7 +30,10 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class BaseModel extends IdEntity{
  
-	
+
+    @Version
+    protected int version;
+
 	//单位机构
     @Column(name="ORG_ID")
 	protected String orgId ;

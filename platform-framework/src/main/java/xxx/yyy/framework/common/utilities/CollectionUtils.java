@@ -16,7 +16,9 @@
 package xxx.yyy.framework.common.utilities;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import xxx.yyy.framework.common.model.Treeable;
 
 import java.util.*;
 
@@ -24,7 +26,7 @@ import java.util.*;
 /**
  * 泛型工具类
  * 
- * @author izerui.com
+ * @author serv
  *
  */
 @SuppressWarnings({"rawtypes","unchecked"})
@@ -122,4 +124,84 @@ public class CollectionUtils extends org.apache.commons.collections.CollectionUt
         }
         return targetList;
     }
+
+    /**
+     * 将嵌套关系的资源集合 format成按顺序不含结构嵌套关系的集合
+     *
+     * @param treeList 源集合
+     * @param ignoreType 要忽略的类型 忽略的类型,多个 以 , 区分
+     */
+    public static List mergerChildrenTree(List<? extends Treeable> treeList , String ignoreType) {
+
+        List<? extends Treeable> resultList = new ArrayList<>();
+        mergerChildrenTree(treeList,resultList,ignoreType);
+
+        return resultList;
+    }
+
+    private  static void mergerChildrenTree(List<? extends Treeable> treeList,List targetList , String ignoreType){
+        for (Treeable r : treeList) {
+
+            if(ignoreType==null|| !ArrayUtils.contains(StringUtils.split(ignoreType,","),r.getType())){//如果忽略类型为空,或者 跟忽略类型不一致 则 不添加
+                targetList.add(r);
+                if (r.getChildren() != null && r.getChildren().size() > 0) {
+                    mergerChildrenTree(r.getChildren(), targetList,ignoreType);
+                }
+            }
+
+        }
+    }
+
+
+    /**
+     * 遍历list中的数据,组装成树状列表
+     * @param list
+     * @param ignoreType 要忽略的type , null 为不忽略类型直接组装 忽略的类型,多个 以 , 区分
+     * @return
+     */
+    public static List formatToTree(List<? extends Treeable> list,String ignoreType){
+        List result = new ArrayList();
+
+        for (Treeable r : list) {
+            if (r.getParent() == null && (ignoreType==null|| !ArrayUtils.contains(StringUtils.split(ignoreType,","),r.getType()))) {
+                mergeResourcesToParent(list,r,ignoreType);
+                result.add(r);
+            }
+        }
+
+        return result;
+
+    }
+
+
+    /**
+     * 遍历list中的数据,如果数据的父类与parent相等，将数据加入到parent的children中
+     *
+     * @param list 资源集合
+     * @param parent 父类对象
+     * @param ignoreType 不需要加入到parent的资源类型 忽略的类型,多个 以 , 区分
+     */
+    private static void mergeResourcesToParent(List<? extends Treeable> list, Treeable parent,String ignoreType) {
+        if (!parent.getIsParent()) {
+            return ;
+        }
+
+        parent.getChildren().clear();
+        parent.setIsParent(false);
+
+        for (Treeable r: list) {
+            //这是一个递归过程，如果当前遍历的r资源的parentId等于parent父类对象的id，将会在次递归r对象。通过遍历list是否也存在r对象的子级。
+            if ((ignoreType==null|| !ArrayUtils.contains(StringUtils.split(ignoreType,","),r.getType())) && StringUtils.equals(r.getParentId(),parent.getId()) ) {
+                r.getChildren().clear();
+                mergeResourcesToParent(list,r,ignoreType);
+                parent.getChildren().add(r);
+                parent.setIsParent(true);
+            }
+
+        }
+    }
+
+
+
+
 }
