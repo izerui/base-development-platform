@@ -22,11 +22,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
-import xxx.yyy.framework.common.PlatformException;
-import xxx.yyy.framework.common.model.BaseModel;
+import xxx.yyy.sys.base.model.BaseModel;
 import xxx.yyy.framework.jpa.PlatformJpaRepository;
 import xxx.yyy.framework.jpa.cmd.Command;
 
+import javax.annotation.PostConstruct;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -42,35 +42,56 @@ public abstract class BaseServiceImpl<T extends BaseModel> implements BaseServic
 
     private transient PlatformJpaRepository<T,String> repository;
 
-    //获取Model 对应的 repository bean
-    private PlatformJpaRepository<T,String> getRepository(){
+    @PostConstruct
+    public void initRepository() {
+        // 获取父类声明的泛型类
+        Type type = getClass().getGenericSuperclass();
+        Type[] trueType = ((ParameterizedType) type).getActualTypeArguments();
+        Class<T> currentEntityClass =  (Class<T>) trueType[0];
 
-        if(repository==null){
-            // 获取父类声明的泛型类
-            Type type = getClass().getGenericSuperclass();
-            Type[] trueType = ((ParameterizedType) type).getActualTypeArguments();
-            Class<T> currentEntityClass =  (Class<T>) trueType[0];
+        //找到所有的Repository bean
+        String[] beanNamesForType = applicationContext.getBeanNamesForType(PlatformJpaRepository.class);
+        for (String beanName : beanNamesForType){
+            PlatformJpaRepository jpaRepository = (PlatformJpaRepository) applicationContext.getBean(beanName);
 
-            //找到所有的Repository bean
-            String[] beanNamesForType = applicationContext.getBeanNamesForType(PlatformJpaRepository.class);
-            for (String beanName : beanNamesForType){
-                PlatformJpaRepository jpaRepository = (PlatformJpaRepository) applicationContext.getBean(beanName);
-
-                //如果当前repository的操作model类 跟 当前泛型类一致 , 则将当前respository 作为当前service的操作主repository
-                if(jpaRepository.getEntityClass().equals(currentEntityClass)){
-                    repository = jpaRepository;
-                    break;
-                }
+            //如果当前repository的操作model类 跟 当前泛型类一致 , 则将当前respository 作为当前service的操作主repository
+            if(jpaRepository.getEntityClass().equals(currentEntityClass)){
+                repository = jpaRepository;
+                break;
             }
-
         }
 
-        if(repository==null){
-            throw new PlatformException(getClass().getName()+" 未声明泛型Model,或者未找到对应的repository 操作bean");
-        }
-
-        return repository;
     }
+
+//    //获取Model 对应的 repository bean
+//    private PlatformJpaRepository<T,String> repository{
+//
+//        if(repository==null){
+//            // 获取父类声明的泛型类
+//            Type type = getClass().getGenericSuperclass();
+//            Type[] trueType = ((ParameterizedType) type).getActualTypeArguments();
+//            Class<T> currentEntityClass =  (Class<T>) trueType[0];
+//
+//            //找到所有的Repository bean
+//            String[] beanNamesForType = applicationContext.getBeanNamesForType(PlatformJpaRepository.class);
+//            for (String beanName : beanNamesForType){
+//                PlatformJpaRepository jpaRepository = (PlatformJpaRepository) applicationContext.getBean(beanName);
+//
+//                //如果当前repository的操作model类 跟 当前泛型类一致 , 则将当前respository 作为当前service的操作主repository
+//                if(jpaRepository.getEntityClass().equals(currentEntityClass)){
+//                    repository = jpaRepository;
+//                    break;
+//                }
+//            }
+//
+//        }
+//
+//        if(repository==null){
+//            throw new PlatformException(getClass().getName()+" 未声明泛型Model,或者未找到对应的repository 操作bean");
+//        }
+//
+//        return repository;
+//    }
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -79,129 +100,129 @@ public abstract class BaseServiceImpl<T extends BaseModel> implements BaseServic
 
     @Override
     public BaseService queryOrgId(String orgId) {
-        getRepository().queryOrgId(orgId);
+        repository.queryOrgId(orgId);
         return this;
     }
 
     @Override
     public BaseService queryUnDeleted() {
-        getRepository().queryUnDeleted();
+        repository.queryUnDeleted();
         return this;
     }
 
     @Override
     public BaseService queryDeleted() {
-        getRepository().queryDeleted();
+        repository.queryDeleted();
         return this;
     }
 
     @Override
     public T findOne(String condition, Object... objects) {
-        return getRepository().findOne(condition,objects);
+        return repository.findOne(condition,objects);
     }
 
     @Override
     public List<T> findAll(String condition, Object... objects) {
-        return getRepository().findAll(condition,objects);
+        return repository.findAll(condition,objects);
     }
 
     @Override
     public List<T> findAll(String condition, Sort sort, Object... objects) {
-        return getRepository().findAll(condition,sort,objects);
+        return repository.findAll(condition,sort,objects);
     }
 
     @Override
     public Page<T> findAll(String condition, Pageable pageable, Object... objects) {
-        return getRepository().findAll(condition,pageable,objects);
+        return repository.findAll(condition,pageable,objects);
     }
 
     @Override
     public long count(String condition, Object... objects) {
-        return getRepository().count(condition,objects);
+        return repository.count(condition,objects);
     }
 
     @Override
     @Transactional(readOnly = false)
     public <S> S executeCommand(Command command) {
-        return getRepository().executeCommand(command);
+        return repository.executeCommand(command);
     }
 
     @Override
     public List<T> findAll() {
-        return getRepository().findAll();
+        return repository.findAll();
     }
 
     @Override
     public List<T> findAll(Sort sort) {
-        return getRepository().findAll(sort);
+        return repository.findAll(sort);
     }
 
     @Override
     public List<T> findAll(Iterable<String> ids) {
-        return getRepository().findAll(ids);
+        return repository.findAll(ids);
     }
 
     @Override
     @Transactional(readOnly = false)
     public List<T> save(Iterable<T> entities) {
-        return getRepository().save(entities);
+        return repository.save(entities);
     }
 
     @Override
     public T saveAndFlush(T entity) {
-        return getRepository().saveAndFlush(entity);
+        return repository.saveAndFlush(entity);
     }
 
     @Override
     public void flush() {
-        getRepository().flush();
+        repository.flush();
     }
 
     @Override
     @Transactional(readOnly = false)
     public void deleteInBatch(Iterable<T> entities) {
-        getRepository().deleteInBatch(entities);
+        repository.deleteInBatch(entities);
     }
 
     @Override
     public void deleteAllInBatch() {
-        getRepository().deleteAllInBatch();
+        repository.deleteAllInBatch();
     }
 
     @Override
     public void deleteAll() {
-        getRepository().deleteAll();
+        repository.deleteAll();
     }
 
     @Override
     public Page<T> findAll(Pageable pageable) {
-        return getRepository().findAll(pageable);
+        return repository.findAll(pageable);
     }
 
     @Override
     @Transactional(readOnly = false)
     public T save(T entity) {
-        return getRepository().save(entity);
+        return repository.save(entity);
     }
 
     @Override
     public T findOne(String id) {
-        return getRepository().findOne(id);
+        return repository.findOne(id);
     }
 
     @Override
     public T getOne(String id) {
-        return getRepository().getOne(id);
+        return repository.getOne(id);
     }
 
     @Override
     public boolean exists(String id) {
-        return getRepository().exists(id);
+        return repository.exists(id);
     }
 
     @Override
     public long count() {
-        return getRepository().count();
+        return repository.count();
     }
 
     @Override
@@ -233,7 +254,7 @@ public abstract class BaseServiceImpl<T extends BaseModel> implements BaseServic
     @Override
     @Transactional(readOnly = false)
     public void deleteByIds(Iterable<String> ids) {
-        List<T> entities = getRepository().findAll(ids);
+        List<T> entities = repository.findAll(ids);
         delete(entities);
     }
 }

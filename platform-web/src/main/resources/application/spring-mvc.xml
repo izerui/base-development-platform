@@ -83,36 +83,19 @@
         <property name="maxUploadSize" value="204800000000" />
     </bean>
 
-    <!--<bean-->
-            <!--class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">-->
-        <!--<property name="exceptionMappings">-->
-            <!--<props>-->
-                <!--<prop key="org.apache.shiro.authz.UnauthorizedException">/unauthorized</prop>-->
-            <!--</props>-->
-        <!--</property>-->
-    <!--</bean>-->
+    <bean
+            class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <props>
+                <prop key="org.apache.shiro.authz.UnauthorizedException">/unauthorized</prop>
+            </props>
+        </property>
+    </bean>
 
     <!-- 启用shrio授权注解拦截方式 -->
-    <!--<bean-->
-            <!--class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">-->
-        <!--<property name="securityManager" ref="securityManager" />-->
-    <!--</bean>-->
-
-
-    <bean id="captchaProducer" class="com.google.code.kaptcha.impl.DefaultKaptcha">
-        <property name="config">
-            <bean class="com.google.code.kaptcha.util.Config">
-                <constructor-arg type="java.util.Properties">
-                    <props>
-                        <prop key="kaptcha.image.width">100</prop>
-                        <prop key="kaptcha.image.height">35</prop>
-                        <prop key="kaptcha.textproducer.font.size">25</prop>
-                        <prop key="kaptcha.textproducer.char.string">0123456789</prop>
-                        <prop key="kaptcha.textproducer.char.length">4</prop>
-                    </props>
-                </constructor-arg>
-            </bean>
-        </property>
+    <bean
+            class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager" />
     </bean>
 
 </beans>

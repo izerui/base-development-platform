@@ -44,6 +44,15 @@
 		<property name="filterChainDefinitionMap" ref="chainDefinitionSectionMetaSource" />
 	</bean>
 
+    <bean id="captchaAuthenticationFilter" class="xxx.yyy.sys.security.filter.CaptchaAuthenticationFilter">
+        <!-- 允许的登录出错次数，超出会显示验证码 -->
+        <property name="allowLoginNum" value="3"/>
+        <!-- captcha input name ，用来获取用户输入的验证码 -->
+        <property name="captchaParamName" value="captcha"/>
+    </bean>
+
+    <bean id="mobileAuthenticationFilter" class="xxx.yyy.sys.security.filter.MobileAuthenticationFilter"/>
+
 	<!-- 自定义对 shiro的连接约束,结合shiroSecurityFilter实现动态获取资源 -->
 	<bean id="chainDefinitionSectionMetaSource"
 		class="xxx.yyy.sys.security.filter.ChainDefinitionSectionMetaSource">
@@ -76,5 +85,22 @@
 	<bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
 		<property name="cacheManager" ref="ehCacheManagerFactory" />
 	</bean>
+
+
+    <bean id="captchaProducer" class="com.google.code.kaptcha.impl.DefaultKaptcha">
+        <property name="config">
+            <bean class="com.google.code.kaptcha.util.Config">
+                <constructor-arg type="java.util.Properties">
+                    <props>
+                        <prop key="kaptcha.image.width">100</prop>
+                        <prop key="kaptcha.image.height">35</prop>
+                        <prop key="kaptcha.textproducer.font.size">25</prop>
+                        <prop key="kaptcha.textproducer.char.string">0123456789</prop>
+                        <prop key="kaptcha.textproducer.char.length">4</prop>
+                    </props>
+                </constructor-arg>
+            </bean>
+        </property>
+    </bean>
 
 </beans>

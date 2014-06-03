@@ -15,7 +15,7 @@
  */
 package xxx.yyy.sys.test.model;
 
-import xxx.yyy.framework.common.model.IdEntity;
+import xxx.yyy.sys.base.model.BaseBusinessModel;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,7 +26,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "TEST_TABLE")
-public class TestTable extends IdEntity{
+public class TestTable extends BaseBusinessModel {
     @Column(name = "iid",nullable = false)
     private int iid;
     @Column(name="name",length = 64,nullable = true)

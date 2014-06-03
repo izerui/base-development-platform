@@ -41,10 +41,11 @@ public class TestTableTest extends BaseTest {
         TestTable t = new TestTable();
         t.setIid(0);
         t.setName("ddddf");
+        t.setDeptId("fff");
         TestTable t1 = new TestTable();
         t1.setIid(1);
         t1.setName("ddddf");
-
+        t1.setDeptId("fjgjgjgjg");
         testTableRepository.save(t);
         testTableRepository.save(t1);
     }

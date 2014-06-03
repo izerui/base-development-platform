@@ -23,9 +23,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import xxx.yyy.framework.common.enumeration.State;
 import xxx.yyy.sys.base.BaseTest;
-import xxx.yyy.sys.base.model.OperatingRecord;
-import xxx.yyy.sys.base.repository.OperatingRecordDao;
-import xxx.yyy.sys.security.repository.RoleRepository;
+import xxx.yyy.sys.record.model.OperatingRecord;
+import xxx.yyy.sys.record.repository.OperatingRecordDao;
+import xxx.yyy.sys.rbac.repository.RoleRepository;
 
 import java.util.Date;
 import java.util.HashSet;

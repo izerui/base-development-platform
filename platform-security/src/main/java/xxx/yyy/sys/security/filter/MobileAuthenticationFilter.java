@@ -27,7 +27,6 @@ import javax.servlet.ServletResponse;
 /**
  * Created by izerui.com on 14-4-9.
  */
-@Component
 public class MobileAuthenticationFilter extends FormAuthenticationFilter {
 
 

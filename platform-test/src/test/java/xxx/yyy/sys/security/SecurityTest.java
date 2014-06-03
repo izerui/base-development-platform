@@ -15,10 +15,12 @@
  */
 package xxx.yyy.sys.security;
 
+import com.google.common.collect.Lists;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import xxx.yyy.sys.base.BaseTest;
-import xxx.yyy.sys.security.service.AccountService;
+import xxx.yyy.sys.rbac.model.User;
+import xxx.yyy.sys.rbac.service.AccountService;
 
 /**
  * Created by serv on 2014/6/2.
@@ -32,5 +34,20 @@ public class SecurityTest extends BaseTest {
     public void testSelectService(){
         accountService.queryDeleted().count();
 
+    }
+
+    @Test
+    public void testInsert(){
+        User user2 = new User();
+        user2.setName("ddd");
+        user2.setState(1);
+        user2.setEmail("fff");
+        user2.setPassword("ddddfsdfsdfsdfsdf");
+        User user = new User();
+        user.setName("ddd");
+        user.setState(1);
+        user.setEmail("fff");
+        user.setPassword("ddddfsdfsdfsdfsdf");
+        accountService.save(Lists.newArrayList(user,user2));
     }
 }

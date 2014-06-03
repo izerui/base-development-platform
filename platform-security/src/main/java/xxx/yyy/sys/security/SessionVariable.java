@@ -15,17 +15,11 @@
  */
 package xxx.yyy.sys.security;
 
-import com.google.common.collect.Lists;
-import xxx.yyy.framework.common.application.SpringContextHolder;
-import xxx.yyy.framework.common.enumeration.DepartmentType;
-import xxx.yyy.sys.security.model.*;
-import xxx.yyy.sys.security.service.DepartmentService;
+import xxx.yyy.sys.base.context.AbstractContext;
+import xxx.yyy.sys.rbac.model.*;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-
-import static xxx.yyy.framework.common.utilities.CollectionUtils.extractToList;
 
 /**
  * 
@@ -34,10 +28,7 @@ import static xxx.yyy.framework.common.utilities.CollectionUtils.extractToList;
  * @author izerui.com
  * 
  */
-public class SessionVariable implements Serializable ,UserContext,RoleContext,SecretContext,PostContext,DepartmentContext,ResourceContext {
-
-
-    private static final String SYSTEM_SUPER_ADMIN_ROLE_NAME = "system";
+public class SessionVariable extends AbstractContext implements Serializable{
 
     // 当前用户
 	private User user;
@@ -48,12 +39,7 @@ public class SessionVariable implements Serializable ,UserContext,RoleContext,Se
 	// 当前用户的授权资源集合
 	private List<Resource> authorizationInfo;
 
-	// 菜单树
-	private List<Resource> menusList;
-
-	//包含所有类型的安全树
-	private List<Resource> resourceList;
-
+    //当前用户的所属部门列表 用户:部门  n:n
     private List<Department> departmentList;
 
 
@@ -62,266 +48,67 @@ public class SessionVariable implements Serializable ,UserContext,RoleContext,Se
 
 
     //岗位列表
-	private List<Post> postList  ;
+	private List<Post> postList;
 
 
-	public SessionVariable() {
-
-	}
-
-	public SessionVariable(User user) {
-		this.user = user;
-	}
-
-	public SessionVariable(User user, List<Role> rolesList, List<Resource> authorizationInfo, List<Resource> menusList,List<Department> departmentList) {
-		this.user = user;
-		this.rolesList = rolesList;
-		this.authorizationInfo = authorizationInfo;
-		this.menusList = menusList;
-        this.departmentList = departmentList;
-	}
-
-	/**
-	 * 获取当前用户
-	 *
-	 * @return {@link User}
-	 */
-	public User getUser() {
-		return user;
-	}
-
-	/**
-	 * 设置当前用户
-	 *
-	 * @param user 当前用户
-	 */
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	/**
-	 * 获取当前用户所在的角色集合
-	 *
-	 * @return List
-	 */
-	public List<Role> getRolesList() {
-		return rolesList;
-	}
-
-	/**
-	 * 设置当前用户所在的组集合
-	 *
-	 * @param rolesList 组集合
-	 */
-	public void setRolesList(List<Role> rolesList) {
-		this.rolesList = rolesList;
-	}
-
-	/**
-	 * 获取当前用户的所有授权资源集合
-	 *
-	 * @return List
-	 */
-	public List<Resource> getAuthorizationInfo() {
-		return authorizationInfo;
-	}
-
-	/**
-	 * 设置当前用户的所有授权资源集合
-	 *
-	 * @param authorizationInfo 资源集合
-	 */
-	public void setAuthorizationInfo(List<Resource> authorizationInfo) {
-		this.authorizationInfo = authorizationInfo;
-	}
-
-	/**
-	 * 获取当前用户拥有的菜单集合
-	 *
-	 * @return List
-	 */
-	public List<Resource> getMenusList() {
-		return menusList;
-	}
-
-	/**
-	 * 设置当前用户拥有的菜单集合
-	 *
-	 * @param menusList 资源集合
-	 */
-	public void setMenusList(List<Resource> menusList) {
-		this.menusList = menusList;
-	}
-
-	/**
-	 * 包含所有类型的安全树
-	 * @return
-	 */
-	public List<Resource> getResourceList() {
-		return resourceList;
-	}
-
-	/**
-	 * 包含所有类型的安全树
-	 * @param resourceList
-	 */
-	public void setResourceList(List<Resource> resourceList) {
-		this.resourceList = resourceList;
-	}
-
-	public boolean checkRole(String role) {
-		return org.springframework.util.CollectionUtils.contains(this.geRoleNames().iterator(), role);
-	}
-
-	@Override
-	public boolean isSystem(){
-		return this.checkRole(SYSTEM_SUPER_ADMIN_ROLE_NAME);
-	}
-
-
-	@Override
-	public List<String> getUserParentDeptIds(boolean containSelf) {
-		return extractToList(this.getUserParentDepts(containSelf), "id") ;
-
-	}
-
-	public List<Department> getUserParentDepts(boolean containSelf) {
-        String ignoreTypes = DepartmentType.ORGANIZATION.getValue()+","+DepartmentType.GROUP.getValue();
-		DepartmentService deptService = SpringContextHolder.getBean(DepartmentService.class);
-        List<Department> allParents = Lists.newArrayList();
-
-        for(Department department: departmentList){
-            allParents.addAll(deptService.getAllParent(department.getId(),containSelf,ignoreTypes));
+    @Override
+    public User getUser() {
+        //本地机器环境，或者测试环境下使用
+        if(null==user){
+            return ThreadLocalUserContext.getUser();
         }
-		return allParents;
-	}
-
-
-	@Override
-	public List<String> getUserGroupIds() {
-		// TODO 获取用户组ID集合  未实现
-		return new ArrayList<String>();
-	}
-
-	@Override
-	public List<String> geRoleNames() {
-		return extractToList(this.rolesList, "name");
-	}
-
-	@Override
-	public List<String> getRoleIds() {
-		return extractToList(this.rolesList, "id");
-	}
-
-	@Override
-	public List<String> getPostIds() {
-		return extractToList(this.postList, "id") ;
-	}
-
-
-	@Override
-	public List<String> getUserChildOrgIds(boolean containSelf) {
-		return extractToList(this.getUserChildOrgs(containSelf), "id") ;
-
-	}
-
-    @Override
-	public List<Department> getUserChildOrgs(boolean containSelf) {
-        String ignoreTypes = DepartmentType.DEPARTMENT.getValue()+","+DepartmentType.GROUP.getValue();
-		return getChildDepartments(getUserOrgId(),containSelf,ignoreTypes);
-	}
-
-
-    @Override
-    public List<String> getDepartmentIds() {
-        return extractToList(this.departmentList,"id");
+        return user;
     }
 
-    /**
-     * 获取department 列表
-     * @param deptId departmentId
-     * @param containSelf 是否包含当前department
-     * @param ignoreTypes 忽略的类型 , 多个以 , 逗号区分
-     * @return list of {@link xxx.yyy.sys.security.model.Department}
-     */
-    private List<Department> getChildDepartments(String deptId,boolean containSelf,String ignoreTypes) {
-        DepartmentService deptService = SpringContextHolder.getBean(DepartmentService.class);
-        List<Department> departments = deptService.getAllChildDepts(getUserOrgId(),containSelf, ignoreTypes);
-        return departments;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
-    public List<String> getAllChildDepartmentIds(boolean containSelf) {
-        return extractToList(getAllChildDepartments(containSelf),"id");
-    }
-
-    @Override
-    public List<Department> getAllChildDepartments(boolean containSelf) {
-        String ignoreTypes = DepartmentType.ORGANIZATION.getValue()+","+DepartmentType.GROUP.getValue();
-
-        List<Department> all = Lists.newArrayList();
-        for(Department dept:departmentList){
-            all.addAll(getChildDepartments(dept.getId(),containSelf,ignoreTypes));
+    public List<Role> getRolesList() {
+        if(null==rolesList&&null!=user){
+            rolesList = accountService.getUserRoles(getUser().getId());
         }
-        return all;
+        return rolesList;
     }
 
-    /**
-	 * @return the postList
-	 */
-	public List<Post> getPostList() {
-		return postList;
-	}
-
-	/**
-	 * @param postList the postList to set
-	 */
-	public void setPostList(List<Post> postList) {
-		this.postList = postList;
-	}
-
+    public void setRolesList(List<Role> rolesList) {
+        this.rolesList = rolesList;
+    }
 
     @Override
-    public String getUserOrgId() {
-        return user.getOrgId();
+    public List<Resource> getAuthorizationInfo() {
+        if(null==authorizationInfo&&null!=user){
+            authorizationInfo = resourceService.getUserResources(getUser().getId());
+        }
+        return authorizationInfo;
     }
 
-    /**
-     * 获取当前用户的单位
-     */
-	@Override
-	public Department getUserOrg() {
-        DepartmentService deptService = SpringContextHolder.getBean(DepartmentService.class);
-		return deptService.findOne(this.getUserOrgId());
-	}
+    public void setAuthorizationInfo(List<Resource> authorizationInfo) {
+        this.authorizationInfo = authorizationInfo;
+    }
 
-	/**
-	 * 获取当前用户默认部门
-	 * @return
-	 */
-	public Department getUserDefaultDept() {
-		DepartmentService deptService = SpringContextHolder.getBean(DepartmentService.class);
-		return deptService.findOne(getUser().getDefaultDeptId());
-
-	}
-
-	@Override
-	public Department getUserRootOrg() {
-		DepartmentService deptService = SpringContextHolder.getBean(DepartmentService.class);
-		return deptService.findRootDept(this.getUserOrgId());
-	}
-
-	@Override
-	public String getUserRootOrgId() {
-		 return this.getUserRootOrg().getId();
-	}
-
-
+    @Override
     public List<Department> getDepartmentList() {
+        if(null==departmentList&&null!=user){
+            departmentList = accountService.findOne(getUser().getId()).getDeptList();
+        }
         return departmentList;
     }
 
     public void setDepartmentList(List<Department> departmentList) {
         this.departmentList = departmentList;
+    }
+
+    @Override
+    public List<Post> getPostList() {
+        return postList;
+    }
+
+    public void setPostList(List<Post> postList) {
+        if(null==postList&&null!=user){
+            postList = postService.getUserPosts(getUser().getId());
+        }
+        this.postList = postList;
     }
 }

@@ -18,7 +18,7 @@ package xxx.yyy.sys.base.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import xxx.yyy.framework.common.model.BaseModel;
+import xxx.yyy.sys.base.model.BaseModel;
 import xxx.yyy.framework.jpa.cmd.Command;
 
 import java.util.List;

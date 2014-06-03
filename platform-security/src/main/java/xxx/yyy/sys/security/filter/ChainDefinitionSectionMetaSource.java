@@ -21,10 +21,10 @@ import org.apache.shiro.config.Ini.Section;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import xxx.yyy.sys.security.model.Resource;
-import xxx.yyy.sys.security.model.Role;
-import xxx.yyy.sys.security.service.AccountService;
-import xxx.yyy.sys.security.service.ResourceService;
+import xxx.yyy.sys.rbac.model.Resource;
+import xxx.yyy.sys.rbac.model.Role;
+import xxx.yyy.sys.rbac.service.AccountService;
+import xxx.yyy.sys.rbac.service.ResourceService;
 
 /**
  * 借助spring {@link org.springframework.beans.factory.FactoryBean} 对apache shiro的premission进行动态创建

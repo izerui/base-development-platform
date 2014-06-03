@@ -19,8 +19,8 @@ import org.apache.shiro.authc.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import xxx.yyy.framework.common.enumeration.State;
 import xxx.yyy.sys.security.SessionVariable;
-import xxx.yyy.sys.security.model.User;
-import xxx.yyy.sys.security.service.AccountService;
+import xxx.yyy.sys.rbac.model.User;
+import xxx.yyy.sys.rbac.service.AccountService;
 
 /**
 *
@@ -57,7 +57,8 @@ public class JdbcAuthenticationRealm extends AuthorizationRealm{
         	 throw new DisabledAccountException("你的账户已被禁用,请联系管理员开通.");
         }
 
-        SessionVariable model = new SessionVariable(user);
+        SessionVariable model = new SessionVariable();
+        model.setUser(user);
 
         return new SimpleAuthenticationInfo(model,user.getPassword(),getName());
 	}
