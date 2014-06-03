@@ -66,9 +66,12 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter {
 			number = new Integer(1);
 			session.setAttribute(SESSION_LOGINNUM_KEY, number);
 		}
-		
+		Boolean sessionShowCaptcha = (Boolean) session.getAttribute(SESSION_SHOWCAPTCHA_KEY);
+        if(sessionShowCaptcha==null){
+            sessionShowCaptcha = false;
+        }
 		//如果登录次数大于allowLoginNum，需要判断验证码是否一致
-		if (number > allowLoginNum||(Boolean)session.getAttribute(SESSION_SHOWCAPTCHA_KEY)) {
+		if (number > allowLoginNum||sessionShowCaptcha) {
 			//获取当前验证码
 			String currentCaptcha = (String) session.getAttribute(SESSION_CAPTCHA_KEY);
 			//获取用户输入的验证码

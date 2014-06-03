@@ -42,8 +42,9 @@
     <context:component-scan base-package="xxx.yyy">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
-        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Component"/>
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+        <context:exclude-filter type="annotation" expression="org.aspectj.lang.annotation.Aspect"/>
+        <context:exclude-filter type="annotation" expression="xxx.yyy.framework.common.annotation.BeanComponent"/>
     </context:component-scan>
 
     <mvc:resources mapping="/resources/**"

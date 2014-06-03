@@ -37,6 +37,18 @@ public class SecurityTest extends BaseTest {
     }
 
     @Test
+    public void addAdmin(){
+        User user = new User();
+        user.setId("admin");
+        user.setName("admin");
+        user.setPassword("21232f297a57a5a743894a0e4a801fc3");
+        user.setEmail("ddjdjj");
+        accountService.save(user);
+    }
+
+
+
+    @Test
     public void testInsert(){
         User user2 = new User();
         user2.setName("ddd");
