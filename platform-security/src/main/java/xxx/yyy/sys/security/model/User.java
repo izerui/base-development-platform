@@ -22,6 +22,7 @@ import xxx.yyy.framework.common.model.BaseInfoModel;
 import xxx.yyy.framework.common.utilities.BirthdayUtil;
 import xxx.yyy.framework.common.utilities.CollectionUtils;
 import xxx.yyy.framework.common.utilities.I18nUtils;
+import xxx.yyy.sys.security.model.listener.UserListener;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import java.util.List;
 /**
  * Created by serv on 2014/5/31.
  */
+@EntityListeners({UserListener.class})
 @Entity
 @Table(name = "SYS_RBAC_USER")
 public class User extends BaseInfoModel {
