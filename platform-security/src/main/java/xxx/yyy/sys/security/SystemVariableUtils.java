@@ -26,8 +26,6 @@ import xxx.yyy.sys.security.filter.CaptchaAuthenticationFilter;
  * @author serv
  *
  */
-@Component
-@DependsOn("messageSource")
 public class SystemVariableUtils{
 
 	
