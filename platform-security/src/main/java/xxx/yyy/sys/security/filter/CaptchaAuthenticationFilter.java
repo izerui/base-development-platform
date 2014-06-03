@@ -16,7 +16,6 @@
 package xxx.yyy.sys.security.filter;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
@@ -150,7 +149,7 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter {
 	}
 
 	/**
-	 * 重写父类方法，创建一个自定义的{@link UsernamePasswordTokeExtend}
+	 * 重写父类方法，创建一个自定义的{@link}
 	 */
 	@Override
 	protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) {
@@ -161,58 +160,13 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter {
 
 		boolean rememberMe = false;
 		String rememberMeValue = request.getParameter(getRememberMeParam());
-		Integer rememberMeCookieValue = null;
 		// 如果提交的rememberMe参数存在值,将rememberMe设置成true
 		if (StringUtils.isNotEmpty(rememberMeValue)) {
 			rememberMe = true;
-
-			rememberMeCookieValue = NumberUtils.toInt(rememberMeValue);
 		}
 
-		return new UsernamePasswordTokeExtend(username, password, rememberMe, host, rememberMeCookieValue);
+		return new UsernamePasswordToken(username, password, rememberMe, host);
 	}
 
-	/**
-	 * UsernamePasswordToke扩展，添加一个rememberMeValue字段，获取提交上来的rememberMe值
-	 * 根据该rememberMe值去设置Cookie的有效时间。
-	 * 
-	 * @author izerui.com
-	 * 
-	 */
-	@SuppressWarnings("serial")
-	protected class UsernamePasswordTokeExtend extends UsernamePasswordToken {
 
-		// rememberMe cookie的有效时间
-		private Integer rememberMeCookieValue;
-
-		public UsernamePasswordTokeExtend() {
-
-		}
-
-		public UsernamePasswordTokeExtend(String username, String password, boolean rememberMe, String host,
-				Integer rememberMeCookieValue) {
-			super(username, password, rememberMe, host);
-			this.rememberMeCookieValue = rememberMeCookieValue;
-		}
-
-		/**
-		 * 获取rememberMe cookie的有效时间
-		 * 
-		 * @return Integer
-		 */
-		public Integer getRememberMeCookieValue() {
-			return rememberMeCookieValue;
-		}
-
-		/**
-		 * 设置rememberMe cookie的有效时间
-		 * 
-		 * @param rememberMeCookieValue
-		 *            cookie的有效时间
-		 */
-		public void setRememberMeCookieValue(Integer rememberMeCookieValue) {
-			this.rememberMeCookieValue = rememberMeCookieValue;
-		}
-
-	}
 }
