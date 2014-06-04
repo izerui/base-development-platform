@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xxx.yyy.framework.jpa;
+package xxx.yyy.sys.base.jpa;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
-import xxx.yyy.framework.jpa.cmd.Command;
+import xxx.yyy.sys.base.jpa.cmd.Command;
 
 import java.io.Serializable;
 import java.util.List;
@@ -33,7 +33,7 @@ public interface PlatformJpaRepository<T,ID extends Serializable> extends JpaRep
 
 
     /**
-     * 附加单位数据约束
+     * 附加单位数据约束 对于 Specification 查询模型方法无效
      * @param orgId
      * @return
      */
@@ -41,20 +41,20 @@ public interface PlatformJpaRepository<T,ID extends Serializable> extends JpaRep
 
 
     /**
-     * 过滤数据权限
-     * @param operationType {@see xxx.yyy.sys.datafilter.OperationType}
+     * 过滤数据权限 对于 Specification 查询模型方法无效
+     * @param dataFilterType {@see xxx.yyy.sys.datafilter.OperationType}
      * @return
      */
-    PlatformJpaRepository<T,ID> dataFilter(String operationType);
+    PlatformJpaRepository<T,ID> dataFilter(String dataFilterType);
 
     /**
-     * 未标志删除状态的数据
+     * 未标志删除状态的数据 对于 Specification 查询模型方法无效
      * @return
      */
     PlatformJpaRepository<T,ID> queryUnDeleted();
 
     /**
-     * 已经标志为删除状态的数据
+     * 已经标志为删除状态的数据 对于 Specification 查询模型方法无效
      * @return
      */
     PlatformJpaRepository<T,ID> queryDeleted();

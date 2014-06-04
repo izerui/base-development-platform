@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xxx.yyy.framework.jpa.cmd;
+package xxx.yyy.sys.base.jpa.cmd;
 
 import javax.persistence.EntityManager;
 

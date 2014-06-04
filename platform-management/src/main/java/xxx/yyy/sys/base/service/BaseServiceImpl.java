@@ -23,8 +23,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 import xxx.yyy.sys.base.model.BaseModel;
-import xxx.yyy.framework.jpa.PlatformJpaRepository;
-import xxx.yyy.framework.jpa.cmd.Command;
+import xxx.yyy.sys.base.jpa.PlatformJpaRepository;
+import xxx.yyy.sys.base.jpa.cmd.Command;
 import xxx.yyy.sys.datafilter.OperationType;
 
 import javax.annotation.PostConstruct;
@@ -82,8 +82,8 @@ public abstract class BaseServiceImpl<T extends BaseModel> implements BaseServic
     }
 
     @Override
-    public BaseService<T> dataFilter(OperationType operationType) {
-        repository.dataFilter(operationType.value);
+    public BaseService<T> dataFilter(OperationType dataFilterType) {
+        repository.dataFilter(dataFilterType.value);
         return this;
     }
 

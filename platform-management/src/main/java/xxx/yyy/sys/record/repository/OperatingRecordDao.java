@@ -16,7 +16,7 @@
 package xxx.yyy.sys.record.repository;
 
 import org.springframework.stereotype.Repository;
-import xxx.yyy.framework.jpa.PlatformJpaRepository;
+import xxx.yyy.sys.base.jpa.PlatformJpaRepository;
 import xxx.yyy.sys.record.model.OperatingRecord;
 
 /** 

@@ -1,6 +1,6 @@
 package xxx.yyy.sys.datafilter.repository;
 
-import xxx.yyy.framework.jpa.PlatformJpaRepository;
+import xxx.yyy.sys.base.jpa.PlatformJpaRepository;
 import xxx.yyy.sys.datafilter.model.FilterRule;
 
 /**

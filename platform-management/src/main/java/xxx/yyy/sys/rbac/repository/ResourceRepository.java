@@ -17,7 +17,7 @@ package xxx.yyy.sys.rbac.repository;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import xxx.yyy.framework.jpa.PlatformJpaRepository;
+import xxx.yyy.sys.base.jpa.PlatformJpaRepository;
 import xxx.yyy.sys.rbac.model.Resource;
 
 import java.util.List;

@@ -15,7 +15,7 @@
  */
 package xxx.yyy.sys.test.repository;
 
-import xxx.yyy.framework.jpa.PlatformJpaRepository;
+import xxx.yyy.sys.base.jpa.PlatformJpaRepository;
 import xxx.yyy.sys.test.model.TestTable;
 
 /**

@@ -30,7 +30,7 @@ import java.util.List;
 
 /**
  * 
- * 系统常用变量模型实体
+ * 用户上下文模型实体
  * 
  * @author izerui.com
  * 
@@ -87,25 +87,6 @@ public class SessionVariable extends AbstractContext implements Serializable{
         return departmentList;
     }
 
-    /**
-     * 获取当前用户忽略类型的集合
-     * @param ignoreTypes
-     * @return
-     */
-    private List<Department> getIgnoreTypeList(final String ignoreTypes){
-        List<Department> departmentAndGroupList = accountService.findOne(getUser().getId()).getDeptList();
-        return (List<Department>) CollectionUtils.collect(departmentAndGroupList, new Transformer() {
-            @Override
-            public Object transform(Object o) {
-                Department t = (Department) o;
-                if (ignoreTypes == null || !ArrayUtils.contains(StringUtils.split(","), t.getType())) {
-                    return t;
-                }
-                return null;
-            }
-        });
-    }
-
 
     @Override
     public List<Post> getPostList() {
@@ -133,5 +114,23 @@ public class SessionVariable extends AbstractContext implements Serializable{
         return groupList;
     }
 
+    /**
+     * 获取当前用户忽略类型的集合
+     * @param ignoreTypes
+     * @return
+     */
+    private List<Department> getIgnoreTypeList(final String ignoreTypes){
+        List<Department> departmentAndGroupList = accountService.findOne(getUser().getId()).getDeptList();
+        return (List<Department>) CollectionUtils.collect(departmentAndGroupList, new Transformer() {
+            @Override
+            public Object transform(Object o) {
+                Department t = (Department) o;
+                if (ignoreTypes == null || !ArrayUtils.contains(StringUtils.split(","), t.getType())) {
+                    return t;
+                }
+                return null;
+            }
+        });
+    }
 
 }

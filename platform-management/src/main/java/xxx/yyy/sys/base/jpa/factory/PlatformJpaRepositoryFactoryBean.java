@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xxx.yyy.framework.jpa.factory;
+package xxx.yyy.sys.base.jpa.factory;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean;
 import org.springframework.data.repository.core.RepositoryMetadata;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
-import xxx.yyy.framework.jpa.PlatformJpaRepository;
-import xxx.yyy.framework.jpa.impl.PlatformRepositoryImpl;
+import xxx.yyy.sys.base.jpa.PlatformJpaRepository;
+import xxx.yyy.sys.base.jpa.impl.PlatformRepositoryImpl;
 
 import javax.persistence.EntityManager;
 import java.io.Serializable;

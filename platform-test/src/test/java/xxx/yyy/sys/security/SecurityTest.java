@@ -32,7 +32,7 @@ public class SecurityTest extends BaseTest {
 
     @Test
     public void testSelectService(){
-        accountService.queryDeleted().count();
+        accountService.queryDeleted().findAll();
 
     }
 

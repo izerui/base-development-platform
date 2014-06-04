@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xxx.yyy.framework.jpa.impl;
+package xxx.yyy.sys.base.jpa.impl;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -25,8 +25,8 @@ import org.springframework.data.jpa.repository.query.QueryUtils;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.JpaEntityInformationSupport;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
-import xxx.yyy.framework.jpa.PlatformJpaRepository;
-import xxx.yyy.framework.jpa.cmd.Command;
+import xxx.yyy.sys.base.jpa.PlatformJpaRepository;
+import xxx.yyy.sys.base.jpa.cmd.Command;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -50,7 +50,7 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
     //默认忽略删除状态
     private Boolean deleteStatus = null;
     //过滤的操作类型 CREATE READ PRINGT DELETE UPDATE
-    private String operationType = null;
+    private String dataFilterType = null;
     private String orgId = null;
 
     private final EntityManager entityManager;
@@ -82,8 +82,8 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
     }
 
     @Override
-    public PlatformJpaRepository<T, ID> dataFilter(String operationType) {
-        this.operationType = operationType;
+    public PlatformJpaRepository<T, ID> dataFilter(String dataFilterType) {
+        this.dataFilterType = dataFilterType;
         return this;
     }
 
@@ -121,6 +121,32 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
     }
 
     @Override
+    public Page<T> findAll(Pageable pageable) {
+        return this.findAll(null, pageable, null);
+    }
+
+    @Override
+    public List<T> findAll(Iterable<ID> ids) {
+        return this.findAll("x.id in ?1",ids);
+    }
+
+    @Override
+    public T findOne(ID id) {
+        return this.findOne("id = ?1",id);
+    }
+
+    @Override
+    public List<T> findAll(Sort sort) {
+        return createQuery(null,sort,null).getResultList();
+    }
+
+    @Override
+    public List<T> findAll() {
+        return createQuery(null,null,null).getResultList();
+    }
+
+
+    @Override
     public long count() {
         return QueryUtils.executeCountQuery(createCountQuery(null, null));
     }
@@ -141,23 +167,23 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
     }
 
 
-    @Override
-    protected TypedQuery<Long> getCountQuery(Specification<T> spec) {
-        ConditionApplier applier = new ConditionApplier(spec);
-        return super.getCountQuery(applier.applySpecification());
-    }
-
-    @Override
-    protected TypedQuery<T> getQuery(Specification<T> spec, Pageable pageable) {
-        ConditionApplier applier = new ConditionApplier(spec);
-        return super.getQuery(applier.applySpecification(), pageable);
-    }
-
-    @Override
-    protected TypedQuery<T> getQuery(Specification<T> spec, Sort sort) {
-        ConditionApplier applier = new ConditionApplier(spec);
-        return super.getQuery(applier.applySpecification(), sort);
-    }
+//    @Override
+//    protected TypedQuery<Long> getCountQuery(Specification<T> spec) {
+//        ConditionApplier applier = new ConditionApplier(spec);
+//        return super.getCountQuery(applier.applySpecification());
+//    }
+//
+//    @Override
+//    protected TypedQuery<T> getQuery(Specification<T> spec, Pageable pageable) {
+//        ConditionApplier applier = new ConditionApplier(spec);
+//        return super.getQuery(applier.applySpecification(), pageable);
+//    }
+//
+//    @Override
+//    protected TypedQuery<T> getQuery(Specification<T> spec, Sort sort) {
+//        ConditionApplier applier = new ConditionApplier(spec);
+//        return super.getQuery(applier.applySpecification(), sort);
+//    }
 
 
     //别名
@@ -179,15 +205,21 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
 
     private Query createQuery(String condition, Sort sort, Object[] objects) {
 
+        // select x from table
         String  ql  = getQueryString(FIND_ALL_QUERY_STRING, this.entityInformation.getEntityName());
 
         ConditionApplier applier = new ConditionApplier(condition,objects);
 
-        ql +=  " where "+applier.applyCondition();
+        //where
+        String conditionQL = applier.applyCondition();
+        ql +=  isEmpty(conditionQL)?"":" where "+conditionQL;
+
+        //order by
         ql = applySorting(ql, sort, ALIAS);
 
         Query query = this.entityManager.createQuery(ql);
 
+        //parameters
         applier.applyQueryParameter(query);
 
         return query;
@@ -249,36 +281,37 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
         }
 
 
-        Specification applySpecification(){
-            //添加删除状态条件
-            if(deleteStatus!=null){
-
-                final Boolean b = deleteStatus;
-                specification = Specifications.where(specification).and(new Specification() {
-                    @Override
-                    public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder cb) {
-                        return cb.and(cb.equal(root.get("deleteStatus"),b));
-                    }
-                });
-            }
-
-            //添加机构条件
-            if(orgId!=null){
-                specification = Specifications.where(specification).and(new Specification<T>() {
-                    @Override
-                    public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                        return cb.and(cb.equal(root.get("orgId"),orgId));
-                    }
-                });
-            }
-            reset();
-            return specification;
-        }
+//        Specification applySpecification(){
+//            //添加删除状态条件
+//            if(deleteStatus!=null){
+//
+//                final Boolean b = deleteStatus;
+//                specification = Specifications.where(specification).and(new Specification() {
+//                    @Override
+//                    public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder cb) {
+//                        return cb.and(cb.equal(root.get("deleteStatus"),b));
+//                    }
+//                });
+//            }
+//
+//            //添加机构条件
+//            if(orgId!=null){
+//                specification = Specifications.where(specification).and(new Specification<T>() {
+//                    @Override
+//                    public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+//                        return cb.and(cb.equal(root.get("orgId"),orgId));
+//                    }
+//                });
+//            }
+//            reset();
+//            return specification;
+//        }
 
 
         void reset(){
             orgId = null;
             deleteStatus = null;
+            dataFilterType = null;
         }
 
 

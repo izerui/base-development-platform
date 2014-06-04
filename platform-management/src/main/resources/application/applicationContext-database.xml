@@ -64,7 +64,7 @@
 
 
 	<jpa:repositories base-package="xxx.yyy.*.*.repository"
-                      factory-class="xxx.yyy.framework.jpa.factory.PlatformJpaRepositoryFactoryBean"/>
+                      factory-class="xxx.yyy.sys.base.jpa.factory.PlatformJpaRepositoryFactoryBean"/>
 
 
 	<!-- 使用spring 异常体系 -->

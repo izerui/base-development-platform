@@ -19,7 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import xxx.yyy.sys.base.model.BaseModel;
-import xxx.yyy.framework.jpa.cmd.Command;
+import xxx.yyy.sys.base.jpa.cmd.Command;
 import xxx.yyy.sys.datafilter.OperationType;
 
 import java.util.List;
@@ -33,29 +33,29 @@ import java.util.List;
 public interface BaseService<T extends BaseModel>{
 
     /**
-     * 附加单位查询条件
+     * 附加单位查询条件 对于 Specification 查询模型方法无效
      * @param orgId
      * @return
      */
     BaseService<T> queryOrgId(String orgId);
 
     /**
-     * 附加未删除标志查询条件
+     * 附加未删除标志查询条件 对于 Specification 查询模型方法无效
      * @return
      */
     BaseService<T> queryUnDeleted();
 
     /**
-     * 附加已删除标志查询条件
+     * 附加已删除标志查询条件 对于 Specification 查询模型方法无效
      * @return
      */
     BaseService<T> queryDeleted();
 
     /**
-     * 是否过滤数据权限
+     * 是否过滤数据权限 对于 Specification 查询模型方法无效
      * @return
      */
-    BaseService<T> dataFilter(OperationType operationType);
+    BaseService<T> dataFilter(OperationType dataFilterType);
 
     /**
      * 通过条件查找实体
