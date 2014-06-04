@@ -20,7 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import xxx.yyy.sys.base.model.BaseModel;
 import xxx.yyy.sys.base.jpa.cmd.Command;
-import xxx.yyy.sys.datafilter.OperationType;
+import xxx.yyy.sys.datafilter.DataFilterType;
 
 import java.util.List;
 
@@ -55,7 +55,7 @@ public interface BaseService<T extends BaseModel>{
      * 是否过滤数据权限 对于 Specification 查询模型方法无效
      * @return
      */
-    BaseService<T> dataFilter(OperationType dataFilterType);
+    BaseService<T> dataFilter(DataFilterType dataFilterType);
 
     /**
      * 通过条件查找实体

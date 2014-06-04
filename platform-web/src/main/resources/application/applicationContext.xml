@@ -57,7 +57,7 @@
         <property name="cacheManager" ref="ehCacheManagerFactory"></property>
     </bean>
 
-    <bean  id="springContextHolder"  class="xxx.yyy.framework.common.application.SpringContextHolder" />
+    <bean  id="springContextHolder"  class="xxx.yyy.framework.common.application.SpringContextHolder" lazy-init="false"/>
 
     <!--<bean id="dbMigration" class="com.googlecode.flyway.core.Flyway"-->
           <!--init-method="migrate">-->

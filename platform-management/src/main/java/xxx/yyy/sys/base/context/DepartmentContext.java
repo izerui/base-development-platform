@@ -15,6 +15,7 @@
  */
 package xxx.yyy.sys.base.context;
 
+import xxx.yyy.framework.common.enumeration.DepartmentType;
 import xxx.yyy.sys.rbac.model.Department;
 
 import java.util.List;
@@ -24,6 +25,13 @@ import java.util.List;
  * Created by serv on 2014/6/2.
  */
 public interface DepartmentContext {
+
+
+    String IGNORE_DEPT_GROUP = DepartmentType.DEPARTMENT.getValue()+","+DepartmentType.GROUP.getValue();
+
+    String IGNORE_ORG_GROUP = DepartmentType.ORGANIZATION.getValue()+","+DepartmentType.GROUP.getValue();
+
+
 
     /**
      * 获取当前登录人员所在单位

@@ -25,6 +25,9 @@ import java.util.List;
  */
 public interface RoleContext {
 
+    //系统管理员角色名
+    String SYSTEM_SUPER_ADMIN_ROLE_NAME = "system";
+
     /**
      * 角色验证
      * @param role
@@ -51,5 +54,11 @@ public interface RoleContext {
      * @return
      */
     List<Role> getRolesList();
+
+    /**
+     * 判断当前用户是否为系统超级管理员
+     * @return
+     */
+    public boolean isSystem();
 
 }

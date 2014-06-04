@@ -24,3 +24,5 @@ acl权限
 9. 加入acl 权限， 需要在 businessModel 中加入 listener 监听数据删除的状态。 然后对应删除掉acl中的数据
 
 10。 condition 拼接数据条件的时候 要注意支持 以 order by 结尾的 condition参数 参考 applySorting（）
+
+11. 如果condition 为left join  需要考虑分隔 condition jion 和 order by 中间去加入条件

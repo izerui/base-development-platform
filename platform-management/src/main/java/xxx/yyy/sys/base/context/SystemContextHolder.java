@@ -16,7 +16,6 @@
 package xxx.yyy.sys.base.context;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.UnavailableSecurityManagerException;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,21 +32,16 @@ public class SystemContextHolder {
 
     /**
      * 获取当前安全模型
-     *
-     * @return {@link AbstractContext}
      */
-    public static AbstractContext getSessionContext() {
-        try {
-            Subject subject = SecurityUtils.getSubject();
+    public static SessionVariable getSessionContext() throws Exception{
+        Subject subject = SecurityUtils.getSubject();
 
-            if (subject != null && subject.getPrincipal() != null && subject.getPrincipal() instanceof AbstractContext) {
-                return (AbstractContext) subject.getPrincipal();
-            }
-
-        } catch (UnavailableSecurityManagerException e) {
-            log.debug(e.getMessage());
+        if (subject != null && subject.getPrincipal() != null && subject.getPrincipal() instanceof SessionVariable) {
+            return (SessionVariable) subject.getPrincipal();
         }
+
         return null;
     }
+
 
 }

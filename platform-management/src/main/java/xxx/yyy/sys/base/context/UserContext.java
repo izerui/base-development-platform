@@ -29,10 +29,4 @@ public interface UserContext {
 
 
 
-    /**
-     * 判断当前用户是否为系统超级管理员
-     * @return
-     */
-    public boolean isSystem();
-
 }

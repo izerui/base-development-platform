@@ -18,7 +18,7 @@ package xxx.yyy.sys.security.realm;
 import org.apache.shiro.authc.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import xxx.yyy.framework.common.enumeration.State;
-import xxx.yyy.sys.security.SessionVariable;
+import xxx.yyy.sys.base.context.SessionVariable;
 import xxx.yyy.sys.rbac.model.User;
 import xxx.yyy.sys.rbac.service.AccountService;
 

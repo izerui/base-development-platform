@@ -44,7 +44,7 @@
 		<property name="filterChainDefinitionMap" ref="chainDefinitionSectionMetaSource" />
 	</bean>
 
-    <bean id="captchaAuthenticationFilter" class="xxx.yyy.sys.security.filter.CaptchaAuthenticationFilter">
+    <bean id="captchaAuthenticationFilter" class="xxx.yyy.sys.security.filter.CaptchaAuthenticationFilter" depends-on="springContextHolder">
         <!-- 允许的登录出错次数，超出会显示验证码 -->
         <property name="allowLoginNum" value="3"/>
         <!-- captcha input name ，用来获取用户输入的验证码 -->

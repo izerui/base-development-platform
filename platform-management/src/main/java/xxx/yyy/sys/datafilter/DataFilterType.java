@@ -20,7 +20,7 @@ package xxx.yyy.sys.datafilter;
  * @author serv
  *
  */
-public enum OperationType {
+public enum DataFilterType {
 
 	/**
 	 * 创建权限
@@ -52,10 +52,13 @@ public enum OperationType {
 
 	;
 
-	public String value;
+	private String value;
 
-	private OperationType(String value) {
+	private DataFilterType(String value) {
 		this.value = value;
 	}
 
+    public String getValue() {
+        return value;
+    }
 }

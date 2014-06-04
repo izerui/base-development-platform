@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import xxx.yyy.sys.base.model.BaseModel;
 import xxx.yyy.sys.base.jpa.PlatformJpaRepository;
 import xxx.yyy.sys.base.jpa.cmd.Command;
-import xxx.yyy.sys.datafilter.OperationType;
+import xxx.yyy.sys.datafilter.DataFilterType;
 
 import javax.annotation.PostConstruct;
 import java.lang.reflect.ParameterizedType;
@@ -56,7 +56,7 @@ public abstract class BaseServiceImpl<T extends BaseModel> implements BaseServic
             PlatformJpaRepository jpaRepository = (PlatformJpaRepository) applicationContext.getBean(beanName);
 
             //如果当前repository的操作model类 跟 当前泛型类一致 , 则将当前respository 作为当前service的操作主repository
-            if(jpaRepository.getEntityClass().equals(currentEntityClass)){
+            if(currentEntityClass.isAssignableFrom(jpaRepository.getEntityClass())){
                 repository = jpaRepository;
                 break;
             }
@@ -82,8 +82,8 @@ public abstract class BaseServiceImpl<T extends BaseModel> implements BaseServic
     }
 
     @Override
-    public BaseService<T> dataFilter(OperationType dataFilterType) {
-        repository.dataFilter(dataFilterType.value);
+    public BaseService<T> dataFilter(DataFilterType dataFilterType) {
+        repository.dataFilter(dataFilterType.getValue());
         return this;
     }
 

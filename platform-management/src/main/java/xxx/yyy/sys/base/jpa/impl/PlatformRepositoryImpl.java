@@ -15,32 +15,34 @@
  */
 package xxx.yyy.sys.base.jpa.impl;
 
+import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.data.jpa.repository.query.QueryUtils;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.JpaEntityInformationSupport;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import xxx.yyy.sys.base.context.SystemContextHolder;
 import xxx.yyy.sys.base.jpa.PlatformJpaRepository;
 import xxx.yyy.sys.base.jpa.cmd.Command;
+import xxx.yyy.sys.datafilter.DataFilterType;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.data.jpa.repository.query.QueryUtils.*;
 import static org.springframework.util.StringUtils.isEmpty;
+import static org.springframework.util.StringUtils.startsWithIgnoreCase;
 
 /**
  * Created by serv on 14-5-29.
@@ -122,7 +124,7 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
 
     @Override
     public Page<T> findAll(Pageable pageable) {
-        return this.findAll(null, pageable, null);
+        return this.findAll("", pageable);
     }
 
     @Override
@@ -230,35 +232,46 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
     private class ConditionApplier{
 
 
-        private StringBuilder condition;
+        private String condition = null;
         private Specification specification;
         private Object[] objects;
 
         ConditionApplier(String condition , Object[] objects) {
-            this.condition = new StringBuilder(condition==null ? "" : condition);
+            if(StringUtils.isNotBlank(condition)&&startsWithIgnoreCase(condition,"order")){
+                this.condition = "1=1 "+condition;
+            }
+            if(StringUtils.isNotBlank(condition)){
+                this.condition = condition;
+            }
             this.objects = objects;
         }
 
-        ConditionApplier(Specification specification) {
-            this.specification = specification;
-        }
-
         String applyCondition(){
+            List<String> conditions = Lists.newArrayList();
             //添加删除状态条件
-            if(deleteStatus!=null){
-                if(!isEmpty(condition.toString())){
-                    condition.append(" and ");
-                }
-                condition.append(ALIAS+".deleteStatus = :deleteStatus");
+            if(deleteStatus!=null)  {
+                conditions.add(ALIAS+".deleteStatus = :deleteStatus");
             }
             //添加机构条件
-            if(!isEmpty(orgId)){
-                if(!isEmpty(condition)){
-                    condition.append(" and ");
-                }
-                condition.append(ALIAS+".orgId = :orgId");
+            if(!isEmpty(orgId )) {
+                conditions.add(ALIAS+".orgId = :orgId");
             }
-            return condition.toString();
+
+            if(StringUtils.equals(dataFilterType, DataFilterType.READ.getValue())){
+                try {
+                    List<String> jpqls = SystemContextHolder.getSessionContext().getFilterRuleJpqlList(
+                            getEntityClass(), dataFilterType);
+                    conditions.addAll(jpqls);
+                } catch (Exception e) {
+                }
+
+            }
+
+            if(condition!=null) {
+                conditions.add(condition);
+            }
+            condition = StringUtils.join(conditions, " and ");
+            return condition;
         }
 
         void applyQueryParameter(Query query){
@@ -277,35 +290,26 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
             if(!isEmpty(orgId)){
                 query.setParameter("orgId",orgId);
             }
+
+            //添加数据过滤变量信息
+            Map<String, Object> filterParameters = null;
+            try {
+                filterParameters = SystemContextHolder.getSessionContext().getFilterParameters();
+                if(filterParameters!=null){
+                    Iterator<String> iterator = filterParameters.keySet().iterator();
+                    while(iterator.hasNext()){
+                        String key = iterator.next();
+                        if(StringUtils.contains(condition,":"+key)){
+                            query.setParameter(key,filterParameters.get(key));
+                        }
+                    }
+                }
+
+            } catch (Exception e) {
+            }
+
             reset();
         }
-
-
-//        Specification applySpecification(){
-//            //添加删除状态条件
-//            if(deleteStatus!=null){
-//
-//                final Boolean b = deleteStatus;
-//                specification = Specifications.where(specification).and(new Specification() {
-//                    @Override
-//                    public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder cb) {
-//                        return cb.and(cb.equal(root.get("deleteStatus"),b));
-//                    }
-//                });
-//            }
-//
-//            //添加机构条件
-//            if(orgId!=null){
-//                specification = Specifications.where(specification).and(new Specification<T>() {
-//                    @Override
-//                    public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-//                        return cb.and(cb.equal(root.get("orgId"),orgId));
-//                    }
-//                });
-//            }
-//            reset();
-//            return specification;
-//        }
 
 
         void reset(){

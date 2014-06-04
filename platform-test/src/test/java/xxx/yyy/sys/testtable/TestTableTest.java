@@ -65,4 +65,10 @@ public class TestTableTest extends BaseTest {
         assertThat(all).isNotEmpty();
     }
 
+    @Test
+    public void testQueryByMethodName(){
+
+        testTableRepository.findByIid(0);
+    }
+
 }

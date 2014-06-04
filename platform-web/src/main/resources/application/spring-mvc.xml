@@ -63,10 +63,6 @@
         </mvc:interceptor>
     </mvc:interceptors>
 
-    <!-- 启动spring上下文持有者，帮助在某些方法直接获取spring bean 对象 -->
-    <bean
-            class="xxx.yyy.framework.common.application.SpringContextHolder" />
-
 
     <bean id="viewResolver"
           class="org.springframework.web.servlet.view.InternalResourceViewResolver">

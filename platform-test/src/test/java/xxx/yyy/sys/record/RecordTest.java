@@ -23,9 +23,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import xxx.yyy.framework.common.enumeration.State;
 import xxx.yyy.sys.base.BaseTest;
+import xxx.yyy.sys.rbac.repository.RoleRepository;
 import xxx.yyy.sys.record.model.OperatingRecord;
 import xxx.yyy.sys.record.repository.OperatingRecordDao;
-import xxx.yyy.sys.rbac.repository.RoleRepository;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -66,6 +66,7 @@ public class RecordTest extends BaseTest {
 
     @Test
     public void searData(){
+
         assertThat(operatingRecordDao.findAll(" ip is not null")).isNotEmpty();
         assertThat(operatingRecordDao.findAll(" x.ip is not null")).isNotEmpty();
         assertThat(operatingRecordDao.findAll(" x.ip = ?1","dddd")).isNotEmpty();
