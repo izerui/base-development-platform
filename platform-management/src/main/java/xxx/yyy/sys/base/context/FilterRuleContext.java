@@ -9,6 +9,10 @@ import java.util.List;
  */
 public interface FilterRuleContext {
 
+    /**
+     * 获取用户具有的规则权限列表
+     * @return
+     */
     public List<FilterRule> getFilterRuleList();
 
 }

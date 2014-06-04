@@ -34,7 +34,7 @@ import static xxx.yyy.framework.common.utilities.CollectionUtils.extractToList;
 /**
  * Created by serv on 14-6-3.
  */
-public abstract class AbstractContext implements Serializable,UserContext,RoleContext,SecretContext,PostContext,DepartmentContext,ResourceContext,FilterRuleContext{
+public abstract class AbstractContext implements Serializable,UserContext,RoleContext,PostContext,DepartmentContext,ResourceContext,FilterRuleContext{
 
     private final static String IGNORE_DEPT_GROUP = DepartmentType.DEPARTMENT.getValue()+","+DepartmentType.GROUP.getValue();
 
