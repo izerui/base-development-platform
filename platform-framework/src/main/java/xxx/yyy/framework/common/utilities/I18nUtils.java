@@ -23,8 +23,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.DependsOn;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
+import xxx.yyy.framework.common.annotation.BeanComponent;
 import xxx.yyy.framework.common.application.SpringContextHolder;
 import xxx.yyy.framework.common.application.SpringMVCHolder;
 import xxx.yyy.framework.common.enumeration.ValueEnum;
@@ -37,7 +37,7 @@ import java.util.Locale;
  * @author serv
  *
  */
-@Component
+@BeanComponent
 @DependsOn("messageSource")
 public class I18nUtils implements ApplicationContextAware{
 	private static final Logger log = LoggerFactory.getLogger(I18nUtils.class);

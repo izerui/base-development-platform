@@ -49,6 +49,10 @@
         <property name="allowLoginNum" value="3"/>
         <!-- captcha input name ，用来获取用户输入的验证码 -->
         <property name="captchaParamName" value="captcha"/>
+        <!-- 记住我 参数名 -->
+        <property name="rememberMeParam" value="rememberMe"/>
+        <property name="usernameParam" value="username"/>
+        <property name="passwordParam" value="password"/>
     </bean>
 
     <bean id="mobileAuthenticationFilter" class="xxx.yyy.sys.security.filter.MobileAuthenticationFilter"/>

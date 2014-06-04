@@ -16,19 +16,15 @@
 package xxx.yyy.sys.security.web;
 
 import com.google.code.kaptcha.Producer;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import xxx.yyy.sys.rbac.service.AccountService;
 import xxx.yyy.sys.security.filter.CaptchaAuthenticationFilter;
 
 import javax.imageio.ImageIO;
@@ -40,7 +36,7 @@ import java.io.IOException;
  * @author  serv
  */
 @Controller
-@SessionAttributes(CaptchaAuthenticationFilter.SESSION_SHOWCAPTCHA_KEY)
+@SessionAttributes(CaptchaAuthenticationFilter.SESSION_CAPTCHA_KEY)
 public class SecurityCommonController {
 	
 	@Autowired
