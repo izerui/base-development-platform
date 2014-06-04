@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import xxx.yyy.sys.base.model.BaseModel;
 import xxx.yyy.framework.jpa.cmd.Command;
+import xxx.yyy.sys.datafilter.OperationType;
 
 import java.util.List;
 
@@ -36,19 +37,25 @@ public interface BaseService<T extends BaseModel>{
      * @param orgId
      * @return
      */
-    BaseService queryOrgId(String orgId);
+    BaseService<T> queryOrgId(String orgId);
 
     /**
      * 附加未删除标志查询条件
      * @return
      */
-    BaseService queryUnDeleted();
+    BaseService<T> queryUnDeleted();
 
     /**
      * 附加已删除标志查询条件
      * @return
      */
-    BaseService queryDeleted();
+    BaseService<T> queryDeleted();
+
+    /**
+     * 是否过滤数据权限
+     * @return
+     */
+    BaseService<T> dataFilter(OperationType operationType);
 
     /**
      * 通过条件查找实体

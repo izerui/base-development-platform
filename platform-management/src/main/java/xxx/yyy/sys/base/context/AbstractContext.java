@@ -18,8 +18,9 @@ package xxx.yyy.sys.base.context;
 import com.google.common.collect.Lists;
 import xxx.yyy.framework.common.application.SpringContextHolder;
 import xxx.yyy.framework.common.enumeration.DepartmentType;
-import xxx.yyy.framework.common.utilities.CollectionUtils;
+import xxx.yyy.sys.datafilter.service.FilterRuleService;
 import xxx.yyy.sys.rbac.model.Department;
+import xxx.yyy.sys.rbac.model.User;
 import xxx.yyy.sys.rbac.service.AccountService;
 import xxx.yyy.sys.rbac.service.DepartmentService;
 import xxx.yyy.sys.rbac.service.PostService;
@@ -28,10 +29,12 @@ import xxx.yyy.sys.rbac.service.ResourceService;
 import java.io.Serializable;
 import java.util.List;
 
+import static xxx.yyy.framework.common.utilities.CollectionUtils.extractToList;
+
 /**
  * Created by serv on 14-6-3.
  */
-public abstract class AbstractContext implements Serializable,UserContext,RoleContext,SecretContext,PostContext,DepartmentContext,ResourceContext{
+public abstract class AbstractContext implements Serializable,UserContext,RoleContext,SecretContext,PostContext,DepartmentContext,ResourceContext,FilterRuleContext{
 
     private final static String IGNORE_DEPT_GROUP = DepartmentType.DEPARTMENT.getValue()+","+DepartmentType.GROUP.getValue();
 
@@ -39,19 +42,33 @@ public abstract class AbstractContext implements Serializable,UserContext,RoleCo
 
     private final static String SYSTEM_SUPER_ADMIN_ROLE_NAME = "system";
 
+    // 当前用户
+    private final User user;
+
 
     protected transient DepartmentService departmentService;
     protected transient AccountService accountService;
     protected transient ResourceService resourceService;
     protected transient PostService postService;
+    protected transient FilterRuleService filterRuleService;
 
-    public AbstractContext() {
+    public AbstractContext(User user) {
+        this.user = user;
         departmentService = SpringContextHolder.getBean(DepartmentService.class);
         accountService = SpringContextHolder.getBean(AccountService.class);
         resourceService = SpringContextHolder.getBean(ResourceService.class);
         postService = SpringContextHolder.getBean(PostService.class);
+        filterRuleService = SpringContextHolder.getBean(FilterRuleService.class);
     }
 
+    @Override
+    public User getUser() {
+        //本地机器环境，或者测试环境下使用
+        if(null==user){
+            return ThreadLocalUserContext.getUser();
+        }
+        return user;
+    }
 
     /**
      * 获取department 列表
@@ -61,7 +78,7 @@ public abstract class AbstractContext implements Serializable,UserContext,RoleCo
      * @return list of {@link xxx.yyy.sys.rbac.model.Department}
      */
     private List<Department> getChildDepartments(String deptId,boolean containSelf,String ignoreTypes) {
-        List<Department> departments = departmentService.getAllChildDepts(getUserOrgId(),containSelf, ignoreTypes);
+        List<Department> departments = departmentService.findOne(getUserOrgId()).mergerTolist(containSelf,ignoreTypes);;
         return departments;
     }
 
@@ -104,12 +121,12 @@ public abstract class AbstractContext implements Serializable,UserContext,RoleCo
 
     @Override
     public List<String> getDepartmentIds() {
-        return CollectionUtils.extractToList(this.getDepartmentList(),"id");
+        return extractToList(this.getDepartmentList(), "id");
     }
 
     @Override
     public List<String> getAllChildDepartmentIds(boolean containSelf) {
-        return CollectionUtils.extractToList(getAllChildDepartments(containSelf),"id");
+        return extractToList(getAllChildDepartments(containSelf), "id");
     }
 
     @Override
@@ -123,12 +140,12 @@ public abstract class AbstractContext implements Serializable,UserContext,RoleCo
 
     @Override
     public List<String> getUserChildOrgIds(boolean containSelf) {
-        return CollectionUtils.extractToList(this.getUserChildOrgs(containSelf), "id") ;
+        return extractToList(this.getUserChildOrgs(containSelf), "id") ;
     }
 
     @Override
     public List<String> getUserParentDeptIds(boolean containSelf) {
-        return CollectionUtils.extractToList(this.getUserParentDepts(containSelf), "id") ;
+        return extractToList(this.getUserParentDepts(containSelf), "id") ;
     }
 
     @Override
@@ -143,14 +160,13 @@ public abstract class AbstractContext implements Serializable,UserContext,RoleCo
     }
 
     @Override
-    public List<String> getUserGroupIds() {
-        //TODO 获取用户的群组
-        return null;
+    public List<String> getGroupIds() {
+        return extractToList(getGroupList(), "id");
     }
 
     @Override
     public List<String> getPostIds() {
-        return CollectionUtils.extractToList(getPostList(), "id") ;
+        return extractToList(getPostList(), "id") ;
     }
 
     @Override
@@ -160,12 +176,12 @@ public abstract class AbstractContext implements Serializable,UserContext,RoleCo
 
     @Override
     public List<String> geRoleNames() {
-        return CollectionUtils.extractToList(this.getRolesList(), "name");
+        return extractToList(this.getRolesList(), "name");
     }
 
     @Override
     public List<String> getRoleIds() {
-        return CollectionUtils.extractToList(this.getRolesList(), "id");
+        return extractToList(this.getRolesList(), "id");
     }
 
     @Override

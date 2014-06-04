@@ -130,9 +130,14 @@ public interface DepartmentContext {
      * 获得当前用户群组id集合
      * @return
      */
-    List<String> getUserGroupIds();
+    List<String> getGroupIds();
 
 
+    /**
+     * 获取当前用户的群组
+     * @return
+     */
+    List<Department> getGroupList();
 
 
 }

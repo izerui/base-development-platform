@@ -57,8 +57,7 @@ public class JdbcAuthenticationRealm extends AuthorizationRealm{
         	 throw new DisabledAccountException("你的账户已被禁用,请联系管理员开通.");
         }
 
-        SessionVariable model = new SessionVariable();
-        model.setUser(user);
+        SessionVariable model = new SessionVariable(user);
 
         return new SimpleAuthenticationInfo(model,user.getPassword(),getName());
 	}

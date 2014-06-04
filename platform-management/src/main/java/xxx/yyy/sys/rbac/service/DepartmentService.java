@@ -35,25 +35,6 @@ public interface DepartmentService extends BaseService<Department> {
 
 
     /**
-     * 获取当前部门的所有子对象的一个列表
-     * @param deptId 当前departmentId
-     * @param containSelf 是否包含当前部门自身
-     * @param ignoreType 排除的类型 多个以 , 号区分
-     * @return
-     */
-    public List<Department> getAllChildDepts(String deptId,boolean containSelf,String ignoreType);
-
-
-    /**
-     * 根据用户的orgId 获取当前单位下的组织机构树
-     * @param containSelf 是否包含当前单位本身
-     * @param ignoreType 忽略的类型 {@link xxx.yyy.framework.common.enumeration.DepartmentType}  多个以 , 号区分
-     * @return 可以直接转换成json 数组提供给ztree 的 树状集合
-     */
-    public List<Department> getTree(String orgId,boolean containSelf,String ignoreType);
-
-
-    /**
      * 获取所有父级的列表
      * @param deptId 部门id
      * @param containSelf 是否包含本身

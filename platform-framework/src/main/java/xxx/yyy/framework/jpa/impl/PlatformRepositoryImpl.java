@@ -49,6 +49,8 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
 
     //默认忽略删除状态
     private Boolean deleteStatus = null;
+    //过滤的操作类型 CREATE READ PRINGT DELETE UPDATE
+    private String operationType = null;
     private String orgId = null;
 
     private final EntityManager entityManager;
@@ -76,6 +78,12 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
     @Override
     public PlatformJpaRepository queryDeleted() {
         deleteStatus = true;
+        return this;
+    }
+
+    @Override
+    public PlatformJpaRepository<T, ID> dataFilter(String operationType) {
+        this.operationType = operationType;
         return this;
     }
 
@@ -159,11 +167,12 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
 
     private TypedQuery createCountQuery(String condition, Object[] objects){
 
-        ConditionApplier applier = new ConditionApplier(condition);
+        ConditionApplier applier = new ConditionApplier(condition,objects);
 
         TypedQuery query = entityManager.createQuery(getCountQueryString()+" where "+applier.applyCondition(),Long.class);
 
-        applier.applyQueryParameter(query, objects);
+        applier.applyQueryParameter(query);
+
         return query;
     }
 
@@ -172,28 +181,30 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
 
         String  ql  = getQueryString(FIND_ALL_QUERY_STRING, this.entityInformation.getEntityName());
 
-        ConditionApplier applier = new ConditionApplier(condition);
+        ConditionApplier applier = new ConditionApplier(condition,objects);
 
         ql +=  " where "+applier.applyCondition();
         ql = applySorting(ql, sort, ALIAS);
 
         Query query = this.entityManager.createQuery(ql);
 
-        applier.applyQueryParameter(query,objects);
+        applier.applyQueryParameter(query);
 
         return query;
 
     }
 
 
-    class ConditionApplier{
+    private class ConditionApplier{
 
 
         private StringBuilder condition;
         private Specification specification;
+        private Object[] objects;
 
-        ConditionApplier(String condition) {
+        ConditionApplier(String condition , Object[] objects) {
             this.condition = new StringBuilder(condition==null ? "" : condition);
+            this.objects = objects;
         }
 
         ConditionApplier(Specification specification) {
@@ -218,7 +229,7 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
             return condition.toString();
         }
 
-        void applyQueryParameter(Query query,Object[] objects){
+        void applyQueryParameter(Query query){
 
             if(objects!=null){
                 int i = 0;

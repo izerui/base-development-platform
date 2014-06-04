@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import xxx.yyy.sys.base.model.BaseModel;
 import xxx.yyy.framework.jpa.PlatformJpaRepository;
 import xxx.yyy.framework.jpa.cmd.Command;
+import xxx.yyy.sys.datafilter.OperationType;
 
 import javax.annotation.PostConstruct;
 import java.lang.reflect.ParameterizedType;
@@ -63,55 +64,31 @@ public abstract class BaseServiceImpl<T extends BaseModel> implements BaseServic
 
     }
 
-//    //获取Model 对应的 repository bean
-//    private PlatformJpaRepository<T,String> repository{
-//
-//        if(repository==null){
-//            // 获取父类声明的泛型类
-//            Type type = getClass().getGenericSuperclass();
-//            Type[] trueType = ((ParameterizedType) type).getActualTypeArguments();
-//            Class<T> currentEntityClass =  (Class<T>) trueType[0];
-//
-//            //找到所有的Repository bean
-//            String[] beanNamesForType = applicationContext.getBeanNamesForType(PlatformJpaRepository.class);
-//            for (String beanName : beanNamesForType){
-//                PlatformJpaRepository jpaRepository = (PlatformJpaRepository) applicationContext.getBean(beanName);
-//
-//                //如果当前repository的操作model类 跟 当前泛型类一致 , 则将当前respository 作为当前service的操作主repository
-//                if(jpaRepository.getEntityClass().equals(currentEntityClass)){
-//                    repository = jpaRepository;
-//                    break;
-//                }
-//            }
-//
-//        }
-//
-//        if(repository==null){
-//            throw new PlatformException(getClass().getName()+" 未声明泛型Model,或者未找到对应的repository 操作bean");
-//        }
-//
-//        return repository;
-//    }
-
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
 
     @Override
-    public BaseService queryOrgId(String orgId) {
+    public BaseService<T> queryOrgId(String orgId) {
         repository.queryOrgId(orgId);
         return this;
     }
 
     @Override
-    public BaseService queryUnDeleted() {
+    public BaseService<T> queryUnDeleted() {
         repository.queryUnDeleted();
         return this;
     }
 
     @Override
-    public BaseService queryDeleted() {
+    public BaseService<T> dataFilter(OperationType operationType) {
+        repository.dataFilter(operationType.value);
+        return this;
+    }
+
+    @Override
+    public BaseService<T> queryDeleted() {
         repository.queryDeleted();
         return this;
     }

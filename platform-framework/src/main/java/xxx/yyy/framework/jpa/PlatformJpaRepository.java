@@ -32,7 +32,20 @@ import java.util.List;
 public interface PlatformJpaRepository<T,ID extends Serializable> extends JpaRepository<T,ID> {
 
 
+    /**
+     * 附加单位数据约束
+     * @param orgId
+     * @return
+     */
     PlatformJpaRepository<T,ID> queryOrgId(String orgId);
+
+
+    /**
+     * 过滤数据权限
+     * @param operationType {@see xxx.yyy.sys.datafilter.OperationType}
+     * @return
+     */
+    PlatformJpaRepository<T,ID> dataFilter(String operationType);
 
     /**
      * 未标志删除状态的数据

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xxx.yyy.sys.security;
+package xxx.yyy.sys.base.context;
 
 import xxx.yyy.sys.rbac.model.User;
 

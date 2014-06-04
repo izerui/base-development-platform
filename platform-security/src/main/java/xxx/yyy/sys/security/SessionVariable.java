@@ -15,7 +15,14 @@
  */
 package xxx.yyy.sys.security;
 
+import com.google.common.collect.Lists;
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import xxx.yyy.framework.common.enumeration.DepartmentType;
+import xxx.yyy.framework.common.utilities.CollectionUtils;
 import xxx.yyy.sys.base.context.AbstractContext;
+import xxx.yyy.sys.datafilter.model.FilterRule;
 import xxx.yyy.sys.rbac.model.*;
 
 import java.io.Serializable;
@@ -30,8 +37,6 @@ import java.util.List;
  */
 public class SessionVariable extends AbstractContext implements Serializable{
 
-    // 当前用户
-	private User user;
 
 	// 当前用户所在的角色集合
 	private List<Role> rolesList;
@@ -42,73 +47,91 @@ public class SessionVariable extends AbstractContext implements Serializable{
     //当前用户的所属部门列表 用户:部门  n:n
     private List<Department> departmentList;
 
+    //当前用户的所属群组
+    private List<Department> groupList;
 
-	//TODO 用户数据权限规则
-//	private List<SecretRule> secretRuleList ;
+
+    //权限列表
+	private List<FilterRule> filterRuleList ;
 
 
     //岗位列表
 	private List<Post> postList;
 
 
-    @Override
-    public User getUser() {
-        //本地机器环境，或者测试环境下使用
-        if(null==user){
-            return ThreadLocalUserContext.getUser();
-        }
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
+    public SessionVariable(User user) {
+        super(user);
     }
 
     @Override
     public List<Role> getRolesList() {
-        if(null==rolesList&&null!=user){
+        if(null==rolesList&&null!=getUser()){
             rolesList = accountService.getUserRoles(getUser().getId());
         }
         return rolesList;
     }
 
-    public void setRolesList(List<Role> rolesList) {
-        this.rolesList = rolesList;
-    }
-
     @Override
     public List<Resource> getAuthorizationInfo() {
-        if(null==authorizationInfo&&null!=user){
+        if(null==authorizationInfo&&null!=getUser()){
             authorizationInfo = resourceService.getUserResources(getUser().getId());
         }
         return authorizationInfo;
     }
 
-    public void setAuthorizationInfo(List<Resource> authorizationInfo) {
-        this.authorizationInfo = authorizationInfo;
-    }
-
     @Override
     public List<Department> getDepartmentList() {
-        if(null==departmentList&&null!=user){
-            departmentList = accountService.findOne(getUser().getId()).getDeptList();
+        if(null==departmentList&&null!=getUser()){
+            departmentList = getIgnoreTypeList(DepartmentType.GROUP.getValue());
         }
         return departmentList;
     }
 
-    public void setDepartmentList(List<Department> departmentList) {
-        this.departmentList = departmentList;
+    /**
+     * 获取当前用户忽略类型的集合
+     * @param ignoreTypes
+     * @return
+     */
+    private List<Department> getIgnoreTypeList(final String ignoreTypes){
+        List<Department> departmentAndGroupList = accountService.findOne(getUser().getId()).getDeptList();
+        return (List<Department>) CollectionUtils.collect(departmentAndGroupList, new Transformer() {
+            @Override
+            public Object transform(Object o) {
+                Department t = (Department) o;
+                if (ignoreTypes == null || !ArrayUtils.contains(StringUtils.split(","), t.getType())) {
+                    return t;
+                }
+                return null;
+            }
+        });
     }
+
 
     @Override
     public List<Post> getPostList() {
+        if(null==postList&&null!=getUser()){
+            postList = postService.getUserPosts(getUser().getId());
+        }
         return postList;
     }
 
-    public void setPostList(List<Post> postList) {
-        if(null==postList&&null!=user){
-            postList = postService.getUserPosts(getUser().getId());
+    public List<FilterRule> getFilterRuleList() {
+        if(null==filterRuleList&&null!=getUser()){
+            List<String> relationIds = Lists.newArrayList(getUser().getId());//添加当前用户id
+            relationIds.addAll(getRoleIds());//添加所属角色ids
+            relationIds.addAll(getDepartmentIds());//添加部门ids
+            relationIds.addAll(getPostIds());//添加岗位ids
+            filterRuleList = filterRuleService.queryUnDeleted().findAll("x.relationId in ?1",relationIds);
         }
-        this.postList = postList;
+        return filterRuleList;
     }
+
+    public List<Department> getGroupList() {
+        if(null==groupList&&null!=getUser()){
+            groupList = getIgnoreTypeList(DepartmentType.GROUP.getValue());
+        }
+        return groupList;
+    }
+
+
 }

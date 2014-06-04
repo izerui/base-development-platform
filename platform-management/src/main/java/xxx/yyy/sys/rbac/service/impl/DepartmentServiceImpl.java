@@ -53,16 +53,6 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department> implement
     }
 
     @Override
-    public List<Department> getAllChildDepts(String deptId, boolean containsSelf, String ignoreType) {
-        return findOne(deptId).mergerTolist(containsSelf, ignoreType);
-    }
-
-    @Override
-    public List<Department> getTree(String orgId, boolean containsSelf, String ignoreType) {
-        return findOne(orgId).formatToTree(containsSelf,ignoreType);
-    }
-
-    @Override
     public List<Department> getAllParent(String deptId, boolean containSelf, String ignoreType) {
         List<Department> allParent = Lists.newArrayList();
         Department dept = findOne(deptId);
