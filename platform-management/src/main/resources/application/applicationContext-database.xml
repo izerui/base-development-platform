@@ -63,7 +63,7 @@
 	<!-- <jee:jndi-lookup id="dataSource" jndi-name="jdbc/dataSource"></jee:jndi-lookup> -->
 
 
-	<jpa:repositories base-package="xxx.yyy.sys.rbac.repository"
+	<jpa:repositories base-package="xxx.yyy.*.*.repository"
                       factory-class="xxx.yyy.framework.jpa.factory.PlatformJpaRepositoryFactoryBean"/>
 
 
@@ -88,7 +88,7 @@
 
 	<bean id="entityManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-		<property name="packagesToScan" value="xxx.yyy.sys.rbac.model" />
+		<property name="packagesToScan" value="xxx.yyy.*.*.model" />
 		<property name="dataSource" ref="dataSource" />
 		<property name="jpaVendorAdapter" ref="jpaVendorAdapter" />
 		<property name="jpaPropertyMap">
