@@ -23,7 +23,6 @@ import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
-import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -42,8 +41,8 @@ public abstract class BaseBusinessModel extends BaseModel{
     protected String auditUserId;
 
     //更新时间
-    @Column(name = "AUDIT_TIMESTAMP")
-    protected Calendar auditTimestamp;
+    @Column(name = "AUDIT_DATE")
+    protected Date auditDate;
 
 
     //所属部门
@@ -100,18 +99,18 @@ public abstract class BaseBusinessModel extends BaseModel{
         this.auditUserId = auditUserId;
     }
 
-    public Calendar getAuditTimestamp() {
-        return auditTimestamp;
+    public Date getAuditDate() {
+        return auditDate;
     }
 
-    public void setAuditTimestamp(Calendar auditTimestamp) {
-        this.auditTimestamp = auditTimestamp;
+    public void setAuditDate(Date auditDate) {
+        this.auditDate = auditDate;
     }
 
     @PreUpdate
     public void updateAuditInfo() {
         setAuditUserId(SystemContextHolder.getSessionContext().getUserId());
-        setAuditTimestamp(Calendar.getInstance());
+        setAuditDate(new DateTime().toDate());
     }
 
     @PrePersist
