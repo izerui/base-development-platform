@@ -15,6 +15,7 @@
  */
 package xxx.yyy.sys.test.repository;
 
+import org.springframework.stereotype.Repository;
 import xxx.yyy.sys.base.jpa.PlatformJpaRepository;
 import xxx.yyy.sys.test.model.TestTable;
 
@@ -23,6 +24,7 @@ import java.util.List;
 /**
  * Created by serv on 14-5-30.
  */
+@Repository
 public interface TestTableRepository extends PlatformJpaRepository<TestTable,String>{
 
     public List<TestTable> findByIid(Integer id);

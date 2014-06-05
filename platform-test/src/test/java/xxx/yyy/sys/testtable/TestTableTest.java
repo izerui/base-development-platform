@@ -17,9 +17,11 @@ package xxx.yyy.sys.testtable;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import xxx.yyy.sys.base.BaseTest;
+import xxx.yyy.sys.datafilter.DataFilterType;
 import xxx.yyy.sys.test.model.TestTable;
-import xxx.yyy.sys.test.repository.TestTableRepository;
+import xxx.yyy.sys.test.service.TestTableService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,44 +33,33 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class TestTableTest extends BaseTest {
 
-
     @Autowired
-    TestTableRepository testTableRepository;
-
+    TestTableService testTableService;
     @Test
     public void insert(){
-
         TestTable t = new TestTable();
         t.setIid(0);
         t.setName("ddddf");
         t.setDeptId("fff");
-        TestTable t1 = new TestTable();
-        t1.setIid(1);
-        t1.setName("ddddf");
-        t1.setDeptId("fjgjgjgjg");
-        testTableRepository.save(t);
-        testTableRepository.save(t1);
+        testTableService.save(t);
     }
-
     @Test
     public void list(){
         List<Integer> it = new ArrayList<>();
         it.add(0);
         it.add(1);
-        long count = testTableRepository.count("iid in ?1 ",it);
+        long count = testTableService.count("iid in ?1 ",it);
         assertThat(count).isGreaterThan(0);
     }
-
     @Test
     public void testIn(){
-        Iterable<TestTable> all = testTableRepository.findAll("x.iid in (select t.iid from TestTable t )");
+        Iterable<TestTable> all = testTableService.findAll("x.iid in (select t.iid from TestTable t )");
         assertThat(all).isNotEmpty();
+        testTableService.dataFilter(DataFilterType.READ).findAll();
+        testTableService.findAll("name like ?1",new PageRequest(1,20),"%周扒皮%");
+        testTableService.getOne("uuid");
+        testTableService.queryUnDeleted().count();
     }
 
-    @Test
-    public void testQueryByMethodName(){
-
-        testTableRepository.findByIid(0);
-    }
 
 }
