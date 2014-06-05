@@ -1,5 +1,7 @@
 package xxx.yyy.sys.base.context;
 
+import xxx.yyy.framework.common.enumeration.DepartmentType;
+import xxx.yyy.framework.common.utilities.CollectionUtils;
 import xxx.yyy.sys.rbac.model.Department;
 import xxx.yyy.sys.rbac.model.User;
 
@@ -10,6 +12,8 @@ import java.util.List;
  * Created by serv on 14-6-5.
  */
 public class GroupContext extends AbstractDeptTriangleContext {
+
+    private final static String IGNORE_ORG_DEPARTMENT = DepartmentType.ORGANIZATION.getValue()+","+DepartmentType.DEPARTMENT.getValue();
 
     public GroupContext(User user) {
         super(user);
@@ -22,7 +26,7 @@ public class GroupContext extends AbstractDeptTriangleContext {
      * @return
      */
     public List<String> getGroupIds() {
-        return null;
+        return CollectionUtils.extractToList(getGroupList(),"id");
     }
 
 
@@ -32,7 +36,7 @@ public class GroupContext extends AbstractDeptTriangleContext {
      * @return
      */
     public List<Department> getGroupList() {
-        return null;
+        return getIgnoreTypeList(IGNORE_ORG_DEPARTMENT);
     }
 
 }
