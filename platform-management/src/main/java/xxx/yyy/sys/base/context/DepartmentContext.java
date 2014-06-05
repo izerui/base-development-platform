@@ -52,8 +52,8 @@ public class DepartmentContext extends AbstractDeptTriangleContext{
         for(Department dept : getIgnoreTypeList(IGNORE_ORG_GROUP)){
             childList.addAll(SpringContextHolder.getBean(DepartmentService.class).getOne(dept.getId()).mergerTolist(true,IGNORE_ORG_GROUP));
         }
-        //默认部门id 肯定属于 对应的 关联的多个部门id 之一，如果在此之外则 属于数据错误。返回即为null
-        defaultDepartment = (Department) CollectionUtils.find(getIgnoreTypeList(IGNORE_ORG_GROUP),new Predicate() {
+        //默认部门id 肯定属于 对应的 关联的多个部门id 之一，如果在此之外则 属于数据错误。返回即为null ,因为群组id和部门id是唯一，所以就不忽略查询了
+        defaultDepartment = (Department) CollectionUtils.find(getDepartmentList(),new Predicate() {
             @Override
             public boolean evaluate(Object object) {
                 Department dp = (Department) object;
@@ -64,6 +64,7 @@ public class DepartmentContext extends AbstractDeptTriangleContext{
             }
         });
 
+        //获取所有父级的部门列表
         for(Department department: getDepartmentList()){
             containsParentList.addAll(SpringContextHolder.getBean(DepartmentService.class).getAllParent(department.getId(), true, IGNORE_ORG_GROUP));
         }
