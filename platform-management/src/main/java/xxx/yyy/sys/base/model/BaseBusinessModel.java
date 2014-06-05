@@ -17,6 +17,7 @@ package xxx.yyy.sys.base.model;
 
 import org.joda.time.DateTime;
 import xxx.yyy.framework.common.enumeration.BusinessStatus;
+import xxx.yyy.sys.base.context.SessionVariable;
 import xxx.yyy.sys.base.context.SystemContextHolder;
 
 import javax.persistence.Column;
@@ -115,8 +116,11 @@ public abstract class BaseBusinessModel extends BaseModel{
 
     @PrePersist
     public void applyCreateInfo(){
+        SessionVariable sessionVariable = SystemContextHolder.getSessionContext();
+        setOrgId(sessionVariable.getOrgContext().getOrgId());
+        setDeptId(sessionVariable.getUser().getDefaultDeptId());
         setCreateDate(new DateTime().toDate());
-        setCreatorUserId(SystemContextHolder.getSessionContext().getUserId());
+        setCreatorUserId(sessionVariable.getUserId());
     }
 
 }
