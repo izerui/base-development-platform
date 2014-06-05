@@ -26,10 +26,12 @@ import org.springframework.data.jpa.repository.query.QueryUtils;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.JpaEntityInformationSupport;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import xxx.yyy.framework.common.PlatformException;
 import xxx.yyy.sys.base.context.SystemContextHolder;
 import xxx.yyy.sys.base.jpa.PlatformJpaRepository;
 import xxx.yyy.sys.base.jpa.cmd.Command;
 import xxx.yyy.sys.datafilter.DataFilterType;
+import xxx.yyy.sys.datafilter.context.FilterContext;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -90,6 +92,16 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
 
     @Override
     public T findOne(String condition, Object... objects) {
+        if(isEmpty(condition)){
+            throw new PlatformException("条件不能为空!");
+        }
+        List<T> result = findAll(condition,objects);
+        if(result.size()==0){
+            return null;
+        }
+        if(result.size()>1){
+            throw new PlatformException("找到多个条件为:"+condition+"的条目,请检查数据是否重复!");
+        }
         return (T) createQuery(condition, null, objects).getSingleResult();
     }
 
@@ -257,9 +269,10 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
             }
 
             if(StringUtils.equals(dataFilterType, DataFilterType.READ.getValue())){
-                List<String> jpqls = SystemContextHolder.getSessionContext().getFilterRuleJpqlList(
-                        getEntityClass(), dataFilterType);
-                conditions.addAll(jpqls);
+                FilterContext context = SystemContextHolder.getSessionContext();
+                if(context!=null){
+                    conditions.addAll(context.getFilterRuleJpqlList(getEntityClass(), dataFilterType));
+                }
 
             }
 
@@ -287,20 +300,23 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
                 query.setParameter("orgId",orgId);
             }
 
-            if(!isEmpty(dataFilterType)){
+//            if(!isEmpty(dataFilterType)){
                 //添加数据过滤变量信息
-                Map<String, Object> filterParameters = null;
-                filterParameters = SystemContextHolder.getSessionContext().getFilterParameters();
-                if(filterParameters!=null){
-                    Iterator<String> iterator = filterParameters.keySet().iterator();
-                    while(iterator.hasNext()){
-                        String key = iterator.next();
-                        if(StringUtils.contains(condition,":"+key)){
-                            query.setParameter(key,filterParameters.get(key));
+                FilterContext context = SystemContextHolder.getSessionContext();
+                if(context!=null){
+                    Map<String, Object> filterParameters = context.getFilterParameters();
+                    if(filterParameters!=null){
+                        Iterator<String> iterator = filterParameters.keySet().iterator();
+                        while(iterator.hasNext()){
+                            String key = iterator.next();
+                            if(StringUtils.contains(condition,":"+key)){
+                                query.setParameter(key,filterParameters.get(key));
+                            }
                         }
                     }
                 }
-            }
+
+//            }
 
             reset();
         }

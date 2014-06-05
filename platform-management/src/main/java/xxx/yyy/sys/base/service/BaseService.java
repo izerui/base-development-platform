@@ -181,14 +181,14 @@ public interface BaseService<T extends BaseModel>{
     void flush();
 
     /**
-     * 查找一个实体,走缓存,找不到对象会返回null
+     * 查找一个实体,找不到对象会返回null
      * @param id
      * @return
      */
     T findOne(String id);
 
     /**
-     * load一个对象,不走缓存,找不到对象会抛异常
+     * load一个对象,找不到对象会抛异常
      * @param id
      * @return
      */

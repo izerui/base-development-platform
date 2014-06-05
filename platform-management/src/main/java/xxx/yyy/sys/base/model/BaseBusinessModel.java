@@ -110,14 +110,14 @@ public abstract class BaseBusinessModel extends BaseModel{
 
     @PreUpdate
     public void updateAuditInfo() {
-        setAuditUserId(SystemContextHolder.getSessionContext().getUser().getId());
+        setAuditUserId(SystemContextHolder.getSessionContext().getUserId());
         setAuditTimestamp(Calendar.getInstance());
     }
 
     @PrePersist
     public void applyCreateInfo(){
         setCreateDate(new DateTime().toDate());
-        setCreatorUserId(SystemContextHolder.getSessionContext().getUser().getId());
+        setCreatorUserId(SystemContextHolder.getSessionContext().getUserId());
     }
 
 }

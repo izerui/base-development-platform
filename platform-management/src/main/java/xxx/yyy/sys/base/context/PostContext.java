@@ -15,7 +15,11 @@
  */
 package xxx.yyy.sys.base.context;
 
+import xxx.yyy.framework.common.application.SpringContextHolder;
+import xxx.yyy.framework.common.utilities.CollectionUtils;
 import xxx.yyy.sys.rbac.model.Post;
+import xxx.yyy.sys.rbac.model.User;
+import xxx.yyy.sys.rbac.service.PostService;
 
 import java.util.List;
 
@@ -23,15 +27,36 @@ import java.util.List;
  * 岗位上下文
  * Created by serv on 2014/6/2.
  */
-public interface PostContext {
+public class PostContext extends AbstractUserContext{
+
+
+    private List<Post> postList;
+
+
+    public PostContext(User user) {
+        super(user);
+    }
+
+    @Override
+    protected void init() {
+        postList = SpringContextHolder.getBean(PostService.class).getUserPosts(getUser().getId());
+    }
+
     /**
      * 获取当前用户岗位列表
+     *
      * @return
      */
-    List<String> getPostIds();
+    public List<String> getPostIds() {
+        return CollectionUtils.extractToList(postList, "id");
+    }
+
     /**
      * 获取当前用户岗位列表
+     *
      * @return
      */
-    List<Post> getPostList() ;
+    public List<Post> getPostList() {
+        return postList;
+    }
 }

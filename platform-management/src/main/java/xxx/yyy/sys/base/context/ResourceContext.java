@@ -15,19 +15,38 @@
  */
 package xxx.yyy.sys.base.context;
 
+import xxx.yyy.framework.common.application.SpringContextHolder;
 import xxx.yyy.sys.rbac.model.Resource;
+import xxx.yyy.sys.rbac.model.User;
+import xxx.yyy.sys.rbac.service.ResourceService;
 
 import java.util.List;
 
 /**
  * Created by serv on 2014/6/2.
  */
-public interface ResourceContext {
+public class ResourceContext extends AbstractUserContext{
+
+
+    private List<Resource> resourceList;
+
+    public ResourceContext(User user) {
+        super(user);
+    }
+
+    @Override
+    protected void init() {
+        resourceList = SpringContextHolder.getBean(ResourceService.class).getUserResources(getUser().getId());
+    }
+
     /**
      * 用户具有的资源
+     *
      * @return
      */
-    public List<Resource> getAuthorizationInfo();
+    public List<Resource> getResourceList() {
+        return resourceList;
+    }
 
 
 }

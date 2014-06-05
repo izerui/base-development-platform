@@ -20,13 +20,24 @@ import xxx.yyy.sys.rbac.model.User;
 /**
  * Created by serv on 2014/6/2.
  */
-public interface UserContext {
+public abstract class AbstractUserContext {
+
+    private User user;
+    public AbstractUserContext(User user) {
+        this.user = user;
+        init();
+    }
+
+    protected abstract void init();
+
     /**
      * 获得当前用户
+     *
      * @return
      */
-    public User getUser();
-
+    public User getUser() {
+        return user;
+    }
 
 
 }

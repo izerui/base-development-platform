@@ -15,7 +15,12 @@
  */
 package xxx.yyy.sys.base.context;
 
+import com.google.common.collect.Lists;
+import xxx.yyy.framework.common.application.SpringContextHolder;
+import xxx.yyy.framework.common.utilities.CollectionUtils;
 import xxx.yyy.sys.rbac.model.Role;
+import xxx.yyy.sys.rbac.model.User;
+import xxx.yyy.sys.rbac.service.AccountService;
 
 import java.util.List;
 
@@ -23,42 +28,68 @@ import java.util.List;
  * 角色上下文
  * Created by serv on 2014/6/2.
  */
-public interface RoleContext {
+public class RoleContext extends AbstractUserContext{
 
     //系统管理员角色名
-    String SYSTEM_SUPER_ADMIN_ROLE_NAME = "system";
+    private final static String SYSTEM_SUPER_ADMIN_ROLE_NAME = "system";
+
+    private List<Role> roleList = Lists.newArrayList();
+
+    public RoleContext(User user) {
+        super(user);
+    }
+
+    @Override
+    protected void init() {
+        roleList = SpringContextHolder.getBean(AccountService.class).getOne(getUser().getId()).getRoles();
+    }
 
     /**
      * 角色验证
+     *
      * @param role
      * @return 当前用户是否拥有某角色
      */
-    boolean checkRole(String role);
+    public boolean checkRole(String role) {
+        return org.springframework.util.CollectionUtils.contains(this.geRoleNames().iterator(), role);
+    }
 
 
     /**
      * 获取角色名称列表
+     *
      * @return
      */
-    List<String> geRoleNames();
+    public List<String> geRoleNames() {
+        return CollectionUtils.extractToList(roleList,"name");
+    }
 
 
     /**
      * 获取角色ID列表
+     *
      * @return
      */
-    List<String> getRoleIds();
+    public List<String> getRoleIds() {
+        return CollectionUtils.extractToList(roleList,"id");
+    }
 
     /**
      * 获取当前用户的角色列表
+     *
      * @return
      */
-    List<Role> getRolesList();
+    public List<Role> getRolesList() {
+        return roleList;
+    }
 
     /**
      * 判断当前用户是否为系统超级管理员
+     *
      * @return
      */
-    public boolean isSystem();
+    public boolean isSystem() {
+        return checkRole(SYSTEM_SUPER_ADMIN_ROLE_NAME);
+    }
 
 }

@@ -15,137 +15,141 @@
  */
 package xxx.yyy.sys.base.context;
 
+import com.google.common.collect.Lists;
+import org.apache.commons.collections.Predicate;
+import org.apache.commons.lang3.StringUtils;
+import xxx.yyy.framework.common.application.SpringContextHolder;
 import xxx.yyy.framework.common.enumeration.DepartmentType;
+import xxx.yyy.framework.common.utilities.CollectionUtils;
 import xxx.yyy.sys.rbac.model.Department;
+import xxx.yyy.sys.rbac.model.User;
+import xxx.yyy.sys.rbac.service.DepartmentService;
 
 import java.util.List;
 
 /**
- * 单位/部门/群组 上下文
+ * 部门上下文
  * Created by serv on 2014/6/2.
  */
-public interface DepartmentContext {
+public class DepartmentContext extends AbstractDeptTriangleContext{
 
 
-    String IGNORE_DEPT_GROUP = DepartmentType.DEPARTMENT.getValue()+","+DepartmentType.GROUP.getValue();
+    private final static String IGNORE_ORG_GROUP = DepartmentType.ORGANIZATION.getValue()+","+DepartmentType.GROUP.getValue();
 
-    String IGNORE_ORG_GROUP = DepartmentType.ORGANIZATION.getValue()+","+DepartmentType.GROUP.getValue();
+    //包含自身和所有子部门的列表
+    private List<Department> childList = Lists.newArrayList();
+    protected Department defaultDepartment;
+    protected List<Department> containsParentList = Lists.newArrayList();
 
+    public DepartmentContext(User user) {
+        super(user);
+    }
 
+    @Override
+    protected void init() {
+        super.init();
+        //循环当前用户的多个关联部门， 分别获取部门的子部门，并且统一合并到 childList中 （当前用户的所有关联部门和子部门的合集）
+        for(Department dept : getIgnoreTypeList(IGNORE_ORG_GROUP)){
+            childList.addAll(SpringContextHolder.getBean(DepartmentService.class).getOne(dept.getId()).mergerTolist(true,IGNORE_ORG_GROUP));
+        }
+        //默认部门id 肯定属于 对应的 关联的多个部门id 之一，如果在此之外则 属于数据错误。返回即为null
+        defaultDepartment = (Department) CollectionUtils.find(getIgnoreTypeList(IGNORE_ORG_GROUP),new Predicate() {
+            @Override
+            public boolean evaluate(Object object) {
+                Department dp = (Department) object;
+                if(StringUtils.equals(dp.getId(),getUser().getDefaultDeptId())){
+                    return true;
+                }
+                return false;
+            }
+        });
 
-    /**
-     * 获取当前登录人员所在单位
-     * @return
-     */
-    String getUserOrgId();
-
-
-    /**
-     * 获取当前登录人员所在单位
-     * @return
-     */
-    Department getUserOrg();
-
-
-
-    /**
-     * 获取当前登录人员所在最上级单位
-     * @return
-     */
-    Department getUserRootOrg();
-
-    /**
-     * 获取当前登录人员所在顶级单位id
-     * @return
-     */
-    String getUserRootOrgId();
+        for(Department department: getDepartmentList()){
+            containsParentList.addAll(SpringContextHolder.getBean(DepartmentService.class).getAllParent(department.getId(), true, IGNORE_ORG_GROUP));
+        }
+    }
 
     /**
      * 获取用户的默认部门
+     *
      * @return
      */
-    Department getUserDefaultDept();
+    public Department getDefaultDept() {
+        return defaultDepartment;
+    }
 
     /**
      * 获取用户的默认部门ID
+     *
      * @return
      */
-    String getUserDefaultDeptId();
+    public String getDefaultDeptId() {
+        return defaultDepartment.getId();
+    }
 
-
-    /**
-     * 获取当前用户的子机构集合
-     * @param containSelf 是否包含当前机构(单位)
-     * @return
-     */
-    List<Department> getUserChildOrgs(boolean containSelf);
 
 
     /**
      * 获取登录用户当前部门id集合
+     *
      * @return
      */
-    List<String> getDepartmentIds();
+    public List<String> getDepartmentIds() {
+        return CollectionUtils.extractToList(getDepartmentList(),"id");
+    }
 
     /**
      * 获取登录用户当前部门集合
+     *
      * @return
      */
-    List<Department> getDepartmentList();
+    public List<Department> getDepartmentList() {
+        return getIgnoreTypeList(DepartmentType.GROUP.getValue());
+    }
 
 
     /**
-     * 获取登录用户当前部门子部门id集合
-     * @param containSelf 是否包含当前部门
+     * 获取登录用户当前部门和子部门id集合
+     *
      * @return
      */
-    List<String> getAllChildDepartmentIds(boolean containSelf);
+    public List<String> getChildDepartmentIds() {
+        return CollectionUtils.extractToList(childList,"id");
+    }
 
 
     /**
-     * 获取登录用户当前部门子部门集合
-     * @param containSelf 是否包含当前部门
+     * 获取登录用户当前部门和子部门集合
+     *
      * @return
      */
-    List<Department> getAllChildDepartments(boolean containSelf);
+    public List<Department> getChildDepartments() {
+        return childList;
+    }
 
-
-    /**
-     * 获取登录用户当前机构子机构id集合
-     * @param containSelf 是否包含当前机构
-     * @return
-     */
-    List<String> getUserChildOrgIds(boolean containSelf);
-
-    /**
-     * 获取登录用户当前部门父级部门id集合
-     * @param containSelf 是否包含当前部门
-     * @return
-     */
-    List<String> getUserParentDeptIds(boolean containSelf);
-
-
-    /**
-     * 获取当前用户的父部门集合
-     * @param containSelf 是否包含本身
-     * @return
-     */
-    List<Department> getUserParentDepts(boolean containSelf);
 
 
 
     /**
-     * 获得当前用户群组id集合
+     * 获取登录用户当前部门和父级部门id集合
+     *
      * @return
      */
-    List<String> getGroupIds();
+    public List<String> getContainsParentIds() {
+        return CollectionUtils.extractToList(containsParentList,"id");
+    }
 
 
     /**
-     * 获取当前用户的群组
+     * 获取当前用户部门和父部门集合
+     *
      * @return
      */
-    List<Department> getGroupList();
+    public List<Department> getContainsParentList() {
+        return containsParentList;
+    }
+
+
 
 
 }

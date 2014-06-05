@@ -55,8 +55,8 @@ public class RecordTest extends BaseTest {
 
 
 
-    static {
-
+    @Before
+    public void init(){
         User user = new User();
         user.setId("ddf");
 
@@ -66,9 +66,8 @@ public class RecordTest extends BaseTest {
         ThreadContext.bind(subjectUnderTest);
     }
 
-    @Before
+    @Test
     public void insert(){
-
 
 
         OperatingRecord op = new OperatingRecord();
@@ -87,7 +86,7 @@ public class RecordTest extends BaseTest {
 
 
     @Test
-    public void searData(){
+    public void searchData(){
 
         assertThat(operatingRecordDao.findAll(" ip is not null")).isNotEmpty();
         assertThat(operatingRecordDao.findAll(" x.ip is not null")).isNotEmpty();

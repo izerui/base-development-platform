@@ -106,9 +106,9 @@ public abstract class AuthorizationRealm extends AuthorizingRealm {
 		Assert.notNull(model, "找不到principals中的SessionVariable");
 
 		// 添加用户拥有的permission
-		addPermissions(info, model.getAuthorizationInfo());
+		addPermissions(info, model.getResourceContext().getResourceList());
 		// 添加用户拥有的role
-		addRoles(info, model.getRolesList());
+		addRoles(info, model.getRoleContext().getRolesList());
 
 		return info;
 	}
