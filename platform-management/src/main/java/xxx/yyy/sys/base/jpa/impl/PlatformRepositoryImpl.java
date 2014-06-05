@@ -40,8 +40,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static org.springframework.data.jpa.repository.query.QueryUtils.*;
-import static org.springframework.util.StringUtils.isEmpty;
+import static org.springframework.util.StringUtils.*;
 import static org.springframework.util.StringUtils.startsWithIgnoreCase;
 
 /**
@@ -208,7 +207,7 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
     private Query createQuery(String condition, Sort sort, Object[] objects) {
 
         // select x from table
-        String  ql  = getQueryString(FIND_ALL_QUERY_STRING, this.entityInformation.getEntityName());
+        String  ql  = QueryUtils.getQueryString(FIND_ALL_QUERY_STRING, this.entityInformation.getEntityName());
 
         ConditionApplier applier = new ConditionApplier(condition,objects);
 
@@ -217,7 +216,7 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
         ql +=  isEmpty(conditionQL)?"":" where "+conditionQL;
 
         //order by
-        ql = applySorting(ql, sort, ALIAS);
+        ql = QueryUtils.applySorting(ql, sort, ALIAS);
 
         Query query = this.entityManager.createQuery(ql);
 
@@ -258,12 +257,9 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
             }
 
             if(StringUtils.equals(dataFilterType, DataFilterType.READ.getValue())){
-                try {
-                    List<String> jpqls = SystemContextHolder.getSessionContext().getFilterRuleJpqlList(
-                            getEntityClass(), dataFilterType);
-                    conditions.addAll(jpqls);
-                } catch (Exception e) {
-                }
+                List<String> jpqls = SystemContextHolder.getSessionContext().getFilterRuleJpqlList(
+                        getEntityClass(), dataFilterType);
+                conditions.addAll(jpqls);
 
             }
 
@@ -291,9 +287,9 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
                 query.setParameter("orgId",orgId);
             }
 
-            //添加数据过滤变量信息
-            Map<String, Object> filterParameters = null;
-            try {
+            if(!isEmpty(dataFilterType)){
+                //添加数据过滤变量信息
+                Map<String, Object> filterParameters = null;
                 filterParameters = SystemContextHolder.getSessionContext().getFilterParameters();
                 if(filterParameters!=null){
                     Iterator<String> iterator = filterParameters.keySet().iterator();
@@ -304,8 +300,6 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
                         }
                     }
                 }
-
-            } catch (Exception e) {
             }
 
             reset();
@@ -324,8 +318,8 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
 
     private String getCountQueryString() {
 
-        String countQuery = String.format(COUNT_QUERY_STRING, ALIAS, "%s");
-        return getQueryString(countQuery, entityInformation.getEntityName());
+        String countQuery = String.format(QueryUtils.COUNT_QUERY_STRING, ALIAS, "%s");
+        return QueryUtils.getQueryString(countQuery, entityInformation.getEntityName());
     }
 
 

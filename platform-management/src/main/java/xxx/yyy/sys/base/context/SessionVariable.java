@@ -66,8 +66,11 @@ public class SessionVariable implements DepartmentContext,FilterRuleContext,Post
      * @return list of {@link xxx.yyy.sys.rbac.model.Department}
      */
     private List<Department> getChildDepartments(String deptId,boolean containSelf,String ignoreTypes) {
-        List<Department> departments = SpringContextHolder.getBean(DepartmentService.class).findOne(getUserOrgId()).mergerTolist(containSelf,ignoreTypes);
-        return departments;
+        String key = "getChildDepartments"+containSelf;
+        if(getCache(key)!=null){
+            return getCache(key);
+        }
+        return putCache(key,SpringContextHolder.getBean(DepartmentService.class).findOne(getUserOrgId()).mergerTolist(containSelf,ignoreTypes));
     }
 
 
@@ -156,12 +159,17 @@ public class SessionVariable implements DepartmentContext,FilterRuleContext,Post
     @Override
     public List<Department> getUserParentDepts(boolean containSelf) {
 
+        String key = "getUserParentDepts"+containSelf;
+        if(getCache(key)!=null){
+            return getCache(key);
+        }
+
         List<Department> allParents = Lists.newArrayList();
 
         for(Department department: getDepartmentList()){
             allParents.addAll(SpringContextHolder.getBean(DepartmentService.class).getAllParent(department.getId(),containSelf,IGNORE_ORG_GROUP));
         }
-        return allParents;
+        return putCache(key,allParents);
     }
 
     @Override

@@ -15,14 +15,20 @@
  */
 package xxx.yyy.sys.record;
 
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.subject.SubjectContext;
+import org.apache.shiro.util.ThreadContext;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import xxx.yyy.framework.common.enumeration.State;
 import xxx.yyy.sys.base.BaseTest;
+import xxx.yyy.sys.base.context.SessionVariable;
+import xxx.yyy.sys.rbac.model.User;
 import xxx.yyy.sys.rbac.repository.RoleRepository;
 import xxx.yyy.sys.record.model.OperatingRecord;
 import xxx.yyy.sys.record.repository.OperatingRecordDao;
@@ -33,6 +39,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 
 /**
@@ -47,8 +54,23 @@ public class RecordTest extends BaseTest {
     RoleRepository roleRepository;
 
 
+
+    static {
+
+        User user = new User();
+        user.setId("ddf");
+
+        Subject subjectUnderTest = mock(Subject.class);
+        when(subjectUnderTest.getPrincipal()).thenReturn(new SessionVariable(user));
+        subjectUnderTest.getPrincipal();
+        ThreadContext.bind(subjectUnderTest);
+    }
+
     @Before
     public void insert(){
+
+
+
         OperatingRecord op = new OperatingRecord();
         op.setEndDate(new Date());
         op.setIp("dddd");
@@ -88,7 +110,6 @@ public class RecordTest extends BaseTest {
 
 
     }
-
 
 
 }

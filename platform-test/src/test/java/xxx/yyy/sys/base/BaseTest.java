@@ -32,4 +32,5 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 public abstract class BaseTest extends AbstractTransactionalJUnit4SpringContextTests {
 	protected Logger log = LoggerFactory.getLogger(getClass());
 
+
 }

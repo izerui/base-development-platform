@@ -17,8 +17,10 @@ package xxx.yyy.sys.base.context;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import xxx.yyy.sys.rbac.model.User;
 
 /**
  * 系统变量工具类
@@ -30,18 +32,25 @@ public class SystemContextHolder {
 
     private final static Logger log = LoggerFactory.getLogger(SystemContextHolder.class);
 
+    private static ThreadLocal<User> userThreadLocal = new ThreadLocal<>();
+
     /**
      * 获取当前安全模型
      */
-    public static SessionVariable getSessionContext() throws Exception{
-        Subject subject = SecurityUtils.getSubject();
+    public static SessionVariable getSessionContext(){
+        try{
+            Subject subject = SecurityUtils.getSubject();
 
-        if (subject != null && subject.getPrincipal() != null && subject.getPrincipal() instanceof SessionVariable) {
-            return (SessionVariable) subject.getPrincipal();
+            if (subject != null && subject.getPrincipal() != null && subject.getPrincipal() instanceof SessionVariable) {
+                return (SessionVariable) subject.getPrincipal();
+            }
+
+
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
         }
 
         return null;
     }
-
 
 }
