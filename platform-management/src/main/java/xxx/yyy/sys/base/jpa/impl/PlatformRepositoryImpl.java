@@ -300,7 +300,7 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
                 query.setParameter("orgId",orgId);
             }
 
-//            if(!isEmpty(dataFilterType)){
+            if(!isEmpty(dataFilterType)){
                 //添加数据过滤变量信息
                 FilterContext context = SystemContextHolder.getSessionContext();
                 if(context!=null){
@@ -316,7 +316,7 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
                     }
                 }
 
-//            }
+            }
 
             reset();
         }
