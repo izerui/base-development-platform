@@ -14,6 +14,9 @@ package xxx.yyy.sys.base; /**
  * limitations under the License.
  */
 
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,16 +24,35 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
+import xxx.yyy.sys.base.context.SessionVariable;
+import xxx.yyy.sys.rbac.model.User;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /** 
  * @author  serv
  * @version createtime：2014年1月27日 下午2:12:58
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"classpath*:application/applicationContext*.xml","classpath*:application/*/*/applicationContext*.xml"})
+@ContextConfiguration(locations={
+        "classpath*:application/applicationContext.xml",
+        "classpath*:application/applicationContext-database.xml",
+        "classpath*:application/*/*/applicationContext*.xml"})
 @TransactionConfiguration(defaultRollback = false)
 public abstract class BaseTest extends AbstractTransactionalJUnit4SpringContextTests {
 	protected Logger log = LoggerFactory.getLogger(getClass());
 
+
+    @Before
+    public void setTestUser(){
+        User user = new User();
+        user.setId("admin");
+
+        Subject subjectUnderTest = mock(Subject.class);
+        when(subjectUnderTest.getPrincipal()).thenReturn(new SessionVariable(user));
+        subjectUnderTest.getPrincipal();
+        ThreadContext.bind(subjectUnderTest);
+    }
 
 }

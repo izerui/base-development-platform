@@ -42,8 +42,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static org.springframework.util.StringUtils.*;
-import static org.springframework.util.StringUtils.startsWithIgnoreCase;
+import static org.apache.commons.lang3.StringUtils.*;
 
 /**
  * Created by serv on 14-5-29.
@@ -180,25 +179,6 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
     }
 
 
-//    @Override
-//    protected TypedQuery<Long> getCountQuery(Specification<T> spec) {
-//        ConditionApplier applier = new ConditionApplier(spec);
-//        return super.getCountQuery(applier.applySpecification());
-//    }
-//
-//    @Override
-//    protected TypedQuery<T> getQuery(Specification<T> spec, Pageable pageable) {
-//        ConditionApplier applier = new ConditionApplier(spec);
-//        return super.getQuery(applier.applySpecification(), pageable);
-//    }
-//
-//    @Override
-//    protected TypedQuery<T> getQuery(Specification<T> spec, Sort sort) {
-//        ConditionApplier applier = new ConditionApplier(spec);
-//        return super.getQuery(applier.applySpecification(), sort);
-//    }
-
-
     //别名
     private final static String ALIAS = "x";
 
@@ -208,7 +188,10 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
 
         ConditionApplier applier = new ConditionApplier(condition,objects);
 
-        TypedQuery query = entityManager.createQuery(getCountQueryString()+" where "+applier.applyCondition(),Long.class);
+        String applyCondition = applier.applyCondition();
+        applyCondition = isEmpty(applyCondition)?"":" where "+applyCondition;
+
+        TypedQuery query = entityManager.createQuery(getCountQueryString()+applyCondition,Long.class);
 
         applier.applyQueryParameter(query);
 
@@ -248,10 +231,21 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
         private Object[] objects;
 
         ConditionApplier(String condition , Object[] objects) {
-            if(StringUtils.isNotBlank(condition)&&startsWithIgnoreCase(condition,"order")){
+
+            if(indexOf(condition," where ")>-1){
+                throw new PlatformException("查询条件中不能包含 where 关键字");
+            }
+            if(indexOf(condition," from ")>-1){
+                throw new PlatformException("查询条件中不能包含 from 关键字");
+            }
+            if(indexOf(condition," select ")>-1){
+                throw new PlatformException("查询条件中不能包含 select 关键字");
+            }
+
+            if(isNotBlank(condition)&&startsWithIgnoreCase(condition,"order")){
                 this.condition = "1=1 "+condition;
             }
-            if(StringUtils.isNotBlank(condition)){
+            if(isNotBlank(condition)){
                 this.condition = condition;
             }
             this.objects = objects;
@@ -268,18 +262,21 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
                 conditions.add(ALIAS+".orgId = :orgId");
             }
 
-            if(StringUtils.equals(dataFilterType, DataFilterType.READ.getValue())){
+            if(null!=dataFilterType){
+                String filterRuleCondition = "";
                 FilterContext context = SystemContextHolder.getSessionContext();
                 if(context!=null){
-                    conditions.addAll(context.getFilterRuleJpqlList(getEntityClass(), dataFilterType));
+                    filterRuleCondition = join(context.getFilterRuleJpqlList(getEntityClass(), dataFilterType)," or ");
                 }
 
+                //如果 规则条件返回 null 或者 "" 则 组装 为 (1=1) 否则 (fs=?1 or fs=?2 or fs=?3)
+                conditions.add("("+(filterRuleCondition.equals("")?"1=1":filterRuleCondition)+")");
             }
 
             if(condition!=null) {
                 conditions.add(condition);
             }
-            condition = StringUtils.join(conditions, " and ");
+            condition = join(conditions, " and ");
             return condition;
         }
 
@@ -303,16 +300,15 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
             if(!isEmpty(dataFilterType)){
                 //添加数据过滤变量信息
                 FilterContext context = SystemContextHolder.getSessionContext();
-                if(context!=null){
-                    Map<String, Object> filterParameters = context.getFilterParameters();
-                    if(filterParameters!=null){
-                        Iterator<String> iterator = filterParameters.keySet().iterator();
-                        while(iterator.hasNext()){
-                            String key = iterator.next();
-                            if(StringUtils.contains(condition,":"+key)){
-                                query.setParameter(key,filterParameters.get(key));
-                            }
-                        }
+                if(context==null){
+                    throw new PlatformException("无法获取到当前用户的上下文信息,请验证登录用户状态!");
+                }
+                Map<String, Object> filterParameters = context.getFilterParameters();
+                Iterator<String> iterator = filterParameters.keySet().iterator();
+                while(iterator.hasNext()){
+                    String key = iterator.next();
+                    if(contains(condition,":"+key)){
+                        query.setParameter(key,filterParameters.get(key));
                     }
                 }
 

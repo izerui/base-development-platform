@@ -17,14 +17,19 @@ package xxx.yyy.sys.testtable;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.data.domain.PageRequest;
 import xxx.yyy.sys.base.BaseTest;
 import xxx.yyy.sys.datafilter.DataFilterType;
 import xxx.yyy.sys.test.model.TestTable;
 import xxx.yyy.sys.test.service.TestTableService;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,11 +40,14 @@ public class TestTableTest extends BaseTest {
 
     @Autowired
     TestTableService testTableService;
+
+
+
     @Test
-    public void insert(){
-        TestTable t = new TestTable();
+    public void insert() throws IOException {
+        TestTable t = new  TestTable();
         t.setIid(0);
-        t.setName("ddddf");
+//        t.setName("ddddf");
         t.setDeptId("fff");
         testTableService.save(t);
     }

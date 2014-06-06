@@ -35,7 +35,10 @@ public class OrgContext extends AbstractDeptTriangleContext {
     protected void init() {
         super.init();
         rootOrg = SpringContextHolder.getBean(DepartmentService.class).findRootDept(this.getOrgId());
-        childOrgList = SpringContextHolder.getBean(DepartmentService.class).getOne(getOrgId()).mergerTolist(true,IGNORE_DEPT_GROUP);
+        if(StringUtils.isNotEmpty(getOrgId())){
+            childOrgList = SpringContextHolder.getBean(DepartmentService.class).getOne(getOrgId()).mergerTolist(true,IGNORE_DEPT_GROUP);
+
+        }
         org = (Department) CollectionUtils.find(childOrgList,new Predicate() {
             @Override
             public boolean evaluate(Object object) {
