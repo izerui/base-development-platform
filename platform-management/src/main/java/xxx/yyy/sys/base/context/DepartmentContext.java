@@ -85,7 +85,7 @@ public class DepartmentContext extends AbstractDeptTriangleContext{
      * @return
      */
     public String getDefaultDeptId() {
-        return defaultDepartment.getId();
+        return null==defaultDepartment?null:defaultDepartment.getId();
     }
 
 

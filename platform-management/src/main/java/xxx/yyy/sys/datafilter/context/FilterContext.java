@@ -1,6 +1,6 @@
 package xxx.yyy.sys.datafilter.context;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -15,7 +15,7 @@ public interface FilterContext {
      * @param dataFilterType 数据过滤类型 {@link xxx.yyy.sys.datafilter.DataFilterType}
      * @return jpql 列表
      */
-    public List<String> getFilterRuleJpqlList(final Class modelClass, final String dataFilterType);
+    public Collection<String> getFilterRuleJpqlList(final Class modelClass, final String dataFilterType);
 
     /**
      * 获取用户的变量map信息

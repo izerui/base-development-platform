@@ -16,12 +16,10 @@
 package xxx.yyy.sys.base.jpa.impl;
 
 import com.google.common.collect.Lists;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.query.QueryUtils;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.JpaEntityInformationSupport;
@@ -30,7 +28,6 @@ import xxx.yyy.framework.common.PlatformException;
 import xxx.yyy.sys.base.context.SystemContextHolder;
 import xxx.yyy.sys.base.jpa.PlatformJpaRepository;
 import xxx.yyy.sys.base.jpa.cmd.Command;
-import xxx.yyy.sys.datafilter.DataFilterType;
 import xxx.yyy.sys.datafilter.context.FilterContext;
 
 import javax.persistence.EntityManager;
@@ -179,79 +176,76 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
     }
 
 
-    //别名
-    private final static String ALIAS = "x";
-
-    private final static String FIND_ALL_QUERY_STRING = "from %s "+ALIAS;
-
     private TypedQuery createCountQuery(String condition, Object[] objects){
 
-        ConditionApplier applier = new ConditionApplier(condition,objects);
+        JpqlQueryHolder queryHolder = new JpqlQueryHolder(condition,objects);
 
-        String applyCondition = applier.applyCondition();
-        applyCondition = isEmpty(applyCondition)?"":" where "+applyCondition;
-
-        TypedQuery query = entityManager.createQuery(getCountQueryString()+applyCondition,Long.class);
-
-        applier.applyQueryParameter(query);
-
-        return query;
+        return queryHolder.createCountQuery();
     }
 
 
     private Query createQuery(String condition, Sort sort, Object[] objects) {
 
-        // select x from table
-        String  ql  = QueryUtils.getQueryString(FIND_ALL_QUERY_STRING, this.entityInformation.getEntityName());
+        JpqlQueryHolder queryHolder = new JpqlQueryHolder(condition,sort,objects);
 
-        ConditionApplier applier = new ConditionApplier(condition,objects);
-
-        //where
-        String conditionQL = applier.applyCondition();
-        ql +=  isEmpty(conditionQL)?"":" where "+conditionQL;
-
-        //order by
-        ql = QueryUtils.applySorting(ql, sort, ALIAS);
-
-        Query query = this.entityManager.createQuery(ql);
-
-        //parameters
-        applier.applyQueryParameter(query);
-
-        return query;
-
+        return queryHolder.createQuery();
     }
 
 
-    private class ConditionApplier{
+    private class JpqlQueryHolder {
 
+        //别名
+        private final String ALIAS = "x";
+
+        //QUERY ALL
+        private final String FIND_ALL_QUERY_STRING = "from %s "+ALIAS;
+
+        //传入的condition 排除列表
+        private final String[] IGNORE_CONSTAINS_CHARSEQUENCE = {"where","WHERE","from","FROM"};
 
         private String condition = null;
-        private Specification specification;
+        private Sort sort;
         private Object[] objects;
 
-        ConditionApplier(String condition , Object[] objects) {
 
-            if(indexOf(condition," where ")>-1){
-                throw new PlatformException("查询条件中不能包含 where 关键字");
-            }
-            if(indexOf(condition," from ")>-1){
-                throw new PlatformException("查询条件中不能包含 from 关键字");
-            }
-            if(indexOf(condition," select ")>-1){
-                throw new PlatformException("查询条件中不能包含 select 关键字");
-            }
+        private JpqlQueryHolder(String condition, Sort sort, Object[] objects) {
+            this(condition,objects);
+            this.sort = sort;
+        }
 
-            if(isNotBlank(condition)&&startsWithIgnoreCase(condition,"order")){
-                this.condition = "1=1 "+condition;
+        private JpqlQueryHolder(String condition, Object[] objects) {
+
+            if(startsWithAny(condition,IGNORE_CONSTAINS_CHARSEQUENCE)){
+                throw new PlatformException("查询条件中只能包含WHERE条件表达式!");
             }
-            if(isNotBlank(condition)){
-                this.condition = condition;
-            }
+            this.condition = trimToNull(condition);
             this.objects = objects;
         }
 
-        String applyCondition(){
+
+        private Query createQuery(){
+            StringBuilder sb = new StringBuilder();
+            // select x from table
+            sb.append(QueryUtils.getQueryString(FIND_ALL_QUERY_STRING, entityInformation.getEntityName()))
+                //where
+                .append(applyCondition());
+
+            Query query = entityManager.createQuery(QueryUtils.applySorting(sb.toString(), sort, ALIAS));
+            applyQueryParameter(query);
+            return query;
+        }
+
+        private TypedQuery<Long> createCountQuery(){
+            String ql = String.format(QueryUtils.COUNT_QUERY_STRING, ALIAS, "%s");
+            ql = QueryUtils.getQueryString(ql, entityInformation.getEntityName());
+            ql += applyCondition();
+
+            TypedQuery<Long> query = entityManager.createQuery(ql,Long.class);
+            applyQueryParameter(query);
+            return query;
+        }
+
+        private String applyCondition(){
             List<String> conditions = Lists.newArrayList();
             //添加删除状态条件
             if(deleteStatus!=null)  {
@@ -262,6 +256,7 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
                 conditions.add(ALIAS+".orgId = :orgId");
             }
 
+            //数据规则ql 以 or 连接
             if(null!=dataFilterType){
                 String filterRuleCondition = "";
                 FilterContext context = SystemContextHolder.getSessionContext();
@@ -277,10 +272,10 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
                 conditions.add(condition);
             }
             condition = join(conditions, " and ");
-            return condition;
+            return isEmpty(condition)?"":" where "+condition;
         }
 
-        void applyQueryParameter(Query query){
+        private void applyQueryParameter(Query query){
 
             if(objects!=null){
                 int i = 0;
@@ -326,13 +321,5 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
 
 
     }
-
-
-    private String getCountQueryString() {
-
-        String countQuery = String.format(QueryUtils.COUNT_QUERY_STRING, ALIAS, "%s");
-        return QueryUtils.getQueryString(countQuery, entityInformation.getEntityName());
-    }
-
 
 }

@@ -27,6 +27,7 @@ import xxx.yyy.sys.datafilter.model.FilterRule;
 import xxx.yyy.sys.datafilter.service.FilterRuleService;
 import xxx.yyy.sys.rbac.model.User;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -80,7 +81,7 @@ public class SessionVariable implements FilterContext{
      * @return
      */
     public User getUser(){
-        return get(AbstractUserContext.class.getName()).getUser();
+        return get(DepartmentContext.class.getName()).getUser();
     }
 
     /**
@@ -149,8 +150,8 @@ public class SessionVariable implements FilterContext{
      * @param dataFilterType 数据过滤类型 {@link xxx.yyy.sys.datafilter.DataFilterType}
      * @return jpql 列表
      */
-    public List<String> getFilterRuleJpqlList(final Class modelClass, final String dataFilterType) {
-        return (List<String>) CollectionUtils.transformedCollection(filterRuleList, new Transformer() {
+    public Collection<String> getFilterRuleJpqlList(final Class modelClass, final String dataFilterType) {
+        return (Collection<String>) CollectionUtils.transformedCollection(filterRuleList, new Transformer() {
             @Override
             public Object transform(Object input) {
                 FilterRule fr = (FilterRule) input;

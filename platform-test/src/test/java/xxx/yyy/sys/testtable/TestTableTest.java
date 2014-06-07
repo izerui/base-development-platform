@@ -17,9 +17,6 @@ package xxx.yyy.sys.testtable;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.data.domain.PageRequest;
 import xxx.yyy.sys.base.BaseTest;
 import xxx.yyy.sys.datafilter.DataFilterType;
@@ -29,7 +26,6 @@ import xxx.yyy.sys.test.service.TestTableService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -62,7 +58,6 @@ public class TestTableTest extends BaseTest {
     @Test
     public void testIn(){
         Iterable<TestTable> all = testTableService.findAll("x.iid in (select t.iid from TestTable t )");
-        assertThat(all).isNotEmpty();
         testTableService.dataFilter(DataFilterType.READ).findAll();
         testTableService.findAll("name like ?1",new PageRequest(1,20),"%周扒皮%");
         testTableService.getOne("uuid");

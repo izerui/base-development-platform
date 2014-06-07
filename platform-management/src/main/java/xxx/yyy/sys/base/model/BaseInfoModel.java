@@ -15,7 +15,6 @@
  */
 package xxx.yyy.sys.base.model;
 
-import org.hibernate.validator.constraints.NotBlank;
 import xxx.yyy.framework.common.enumeration.State;
 import xxx.yyy.framework.common.utilities.I18nUtils;
 import xxx.yyy.framework.common.utilities.PinyinUtils;
