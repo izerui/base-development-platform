@@ -43,9 +43,10 @@ public class TestTableTest extends BaseTest {
     public void insert() throws IOException {
         TestTable t = new  TestTable();
         t.setIid(0);
-//        t.setName("ddddf");
+        t.setName("ddddf");
         t.setDeptId("fff");
-        testTableService.save(t);
+        t.setDeptId("ff");
+        testTableService.dataFilter(DataFilterType.CREATE).save(t);
     }
     @Test
     public void list(){

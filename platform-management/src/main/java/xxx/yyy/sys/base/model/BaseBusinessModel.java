@@ -117,8 +117,8 @@ public abstract class BaseBusinessModel extends BaseModel{
     @PrePersist
     public void applyCreateInfo(){
         SessionVariable sessionVariable = SystemContextHolder.getSessionContext();
-        setOrgId(sessionVariable.getOrgContext().getOrgId());
-        setDeptId(sessionVariable.getUser().getDefaultDeptId());
+        setOrgId(null==orgId?sessionVariable.getOrgContext().getOrgId():orgId);
+        setDeptId(null==deptId?sessionVariable.getUser().getDefaultDeptId():deptId);
         setCreateDate(new DateTime().toDate());
         setCreatorUserId(sessionVariable.getUserId());
     }

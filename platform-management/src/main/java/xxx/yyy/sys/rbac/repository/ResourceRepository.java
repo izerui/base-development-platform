@@ -26,7 +26,7 @@ import java.util.List;
  * Created by serv on 2014/6/1.
  */
 @Repository
-public interface ResourceRepository extends PlatformJpaRepository<Resource,String> {
+public interface ResourceRepository extends PlatformJpaRepository<Resource> {
 
     /**
      * 通过用户id获取用户所有角色包含的资源

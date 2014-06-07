@@ -24,6 +24,6 @@ import xxx.yyy.sys.record.model.OperatingRecord;
  * @version createtime：2014年1月15日 上午10:06:33 
  */
 @Repository
-public interface OperatingRecordDao extends PlatformJpaRepository<OperatingRecord, String> {
+public interface OperatingRecordDao extends PlatformJpaRepository<OperatingRecord> {
 
 }

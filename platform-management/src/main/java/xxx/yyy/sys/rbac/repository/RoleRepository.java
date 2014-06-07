@@ -26,7 +26,7 @@ import java.util.List;
  * Created by serv on 2014/6/1.
  */
 @Repository
-public interface RoleRepository extends PlatformJpaRepository<Role,String> {
+public interface RoleRepository extends PlatformJpaRepository<Role> {
 
     /**
      * 根据用户id 获取用户拥有的角色列表

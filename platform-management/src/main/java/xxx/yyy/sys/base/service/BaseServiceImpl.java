@@ -41,7 +41,7 @@ public abstract class BaseServiceImpl<T extends BaseModel> implements BaseServic
 
     protected ApplicationContext applicationContext;
 
-    private transient PlatformJpaRepository<T,String> repository;
+    private transient PlatformJpaRepository<T> repository;
 
     @PostConstruct
     public void initRepository() {

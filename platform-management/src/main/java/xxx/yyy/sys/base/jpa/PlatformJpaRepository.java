@@ -21,15 +21,15 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 import xxx.yyy.sys.base.jpa.cmd.Command;
+import xxx.yyy.sys.base.model.Idable;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by serv on 14-5-29.
  */
 @NoRepositoryBean
-public interface PlatformJpaRepository<T,ID extends Serializable> extends JpaRepository<T,ID> {
+public interface PlatformJpaRepository<T extends Idable> extends JpaRepository<T,String> {
 
 
     /**
@@ -37,7 +37,7 @@ public interface PlatformJpaRepository<T,ID extends Serializable> extends JpaRep
      * @param orgId
      * @return
      */
-    PlatformJpaRepository<T,ID> queryOrgId(String orgId);
+    PlatformJpaRepository<T> queryOrgId(String orgId);
 
 
     /**
@@ -45,19 +45,19 @@ public interface PlatformJpaRepository<T,ID extends Serializable> extends JpaRep
      * @param dataFilterType {@see xxx.yyy.sys.datafilter.OperationType}
      * @return
      */
-    PlatformJpaRepository<T,ID> dataFilter(String dataFilterType);
+    PlatformJpaRepository<T> dataFilter(String dataFilterType);
 
     /**
      * 未标志删除状态的数据 对于 Specification 查询模型方法无效
      * @return
      */
-    PlatformJpaRepository<T,ID> queryUnDeleted();
+    PlatformJpaRepository<T> queryUnDeleted();
 
     /**
      * 已经标志为删除状态的数据 对于 Specification 查询模型方法无效
      * @return
      */
-    PlatformJpaRepository<T,ID> queryDeleted();
+    PlatformJpaRepository<T> queryDeleted();
 
     /**
      * Returns a single entity matching the given condition.
@@ -101,6 +101,12 @@ public interface PlatformJpaRepository<T,ID extends Serializable> extends JpaRep
      * @return the number of instances
      */
     long count(String condition, Object... objects);
+
+    /**
+     * 通过ID的集合删除条目
+     * @param ids
+     */
+    void deleteByIds(Iterable<String> ids);
 
     /**
      * 获取当前DAO对应的实体模型

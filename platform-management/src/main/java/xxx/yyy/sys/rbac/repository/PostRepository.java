@@ -27,7 +27,7 @@ import java.util.List;
  * Created by serv on 2014/6/1.
  */
 @Repository
-public interface PostRepository extends PlatformJpaRepository<Post,String> {
+public interface PostRepository extends PlatformJpaRepository<Post> {
 
     /**
      * 通过机构获取下面的岗位

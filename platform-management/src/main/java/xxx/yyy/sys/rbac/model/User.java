@@ -18,10 +18,10 @@ package xxx.yyy.sys.rbac.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.format.annotation.DateTimeFormat;
 import xxx.yyy.framework.common.enumeration.Gender;
-import xxx.yyy.sys.base.model.BaseInfoModel;
 import xxx.yyy.framework.common.utilities.BirthdayUtil;
 import xxx.yyy.framework.common.utilities.CollectionUtils;
 import xxx.yyy.framework.common.utilities.I18nUtils;
+import xxx.yyy.sys.base.model.BaseInfoModel;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -393,8 +393,10 @@ public class User extends BaseInfoModel {
     //TODO fetch
     public String getDefaultDeptId() {
         if(defaultDeptId==null){
-            Department dept = deptList.get(0);
-            defaultDeptId = dept.getId();
+            if(deptList.size()>0){
+                Department dept = deptList.get(0);
+                defaultDeptId = null==dept?null:dept.getId();
+            }
         }
         return defaultDeptId;
     }

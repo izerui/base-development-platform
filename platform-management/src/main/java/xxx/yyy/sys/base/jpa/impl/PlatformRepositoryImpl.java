@@ -24,27 +24,26 @@ import org.springframework.data.jpa.repository.query.QueryUtils;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.JpaEntityInformationSupport;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.util.Assert;
 import xxx.yyy.framework.common.PlatformException;
+import xxx.yyy.framework.common.utilities.CollectionUtils;
 import xxx.yyy.sys.base.context.SystemContextHolder;
 import xxx.yyy.sys.base.jpa.PlatformJpaRepository;
 import xxx.yyy.sys.base.jpa.cmd.Command;
+import xxx.yyy.sys.base.model.Idable;
 import xxx.yyy.sys.datafilter.context.FilterContext;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.apache.commons.lang3.StringUtils.*;
 
 /**
  * Created by serv on 14-5-29.
  */
-public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpaRepository<T,ID> implements PlatformJpaRepository<T,ID>{
+public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepository<T,String> implements PlatformJpaRepository<T>{
 
     //默认忽略删除状态
     private Boolean deleteStatus = null;
@@ -63,7 +62,7 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
 
 
     @Override
-    public PlatformJpaRepository<T, ID> queryOrgId(String orgId) {
+    public PlatformJpaRepository<T> queryOrgId(String orgId) {
         this.orgId = orgId;
         return this;
     }
@@ -81,7 +80,7 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
     }
 
     @Override
-    public PlatformJpaRepository<T, ID> dataFilter(String dataFilterType) {
+    public PlatformJpaRepository<T> dataFilter(String dataFilterType) {
         this.dataFilterType = dataFilterType;
         return this;
     }
@@ -98,12 +97,12 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
         if(result.size()>1){
             throw new PlatformException("找到多个条件为:"+condition+"的条目,请检查数据是否重复!");
         }
-        return (T) createQuery(condition, null, objects).getSingleResult();
+        return (T) createQuery(condition, objects).getSingleResult();
     }
 
     @Override
     public List<T> findAll(String condition, Object... objects) {
-        return createQuery(condition, null, objects).getResultList();
+        return createQuery(condition, objects).getResultList();
     }
 
     @Override
@@ -135,13 +134,13 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
     }
 
     @Override
-    public List<T> findAll(Iterable<ID> ids) {
+    public List<T> findAll(Iterable<String> ids) {
         return this.findAll("x.id in ?1",ids);
     }
 
     @Override
-    public T findOne(ID id) {
-        return this.findOne("id = ?1",id);
+    public T findOne(String id) {
+        return this.findOne("x.id = ?1", id);
     }
 
     @Override
@@ -151,7 +150,7 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
 
     @Override
     public List<T> findAll() {
-        return createQuery(null,null,null).getResultList();
+        return createQuery(null,null).getResultList();
     }
 
 
@@ -164,6 +163,118 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
     public long count(String condition, Object... objects) {
         return QueryUtils.executeCountQuery(createCountQuery(condition, objects));
     }
+
+
+    @Override
+    public void deleteByIds(Iterable<String> ids) {
+        List<T> tlist = super.findAll(ids);
+        doFilter(tlist);
+        super.deleteInBatch(tlist);
+    }
+
+    @Override
+    public void delete(String id) {
+        Assert.notNull(id, "给定的ID不能为空!");
+
+        T entity = super.findOne(id);
+
+        delete(entity);
+    }
+
+    @Override
+    public void deleteAll() {
+        if(dataFilterType!=null&&super.count()!=count()){
+            throw new PlatformException("包含没有权限删除的数据!");
+        }
+        super.deleteAll();
+    }
+
+
+    @Override
+    public T getOne(String s) {
+        T one = super.getOne(s);
+        doFilter(one);
+        return one;
+    }
+
+    @Override
+    public void deleteAllInBatch() {
+        if(dataFilterType!=null&&super.count()!=count()){
+            throw new PlatformException("包含没有权限删除的数据!");
+        }
+        super.deleteAllInBatch();
+    }
+
+    @Override
+    public void delete(Iterable<? extends T> entities) {
+
+        ArrayList<T> entityList = Lists.newArrayList(entities);
+
+        doFilter(entityList);
+        super.delete(entities);
+    }
+
+    @Override
+    public void delete(T entity) {
+        doFilter(Lists.newArrayList(entity));
+        super.delete(entity);
+    }
+
+    @Override
+    public void deleteInBatch(Iterable<T> entities) {
+        ArrayList<T> entityList = Lists.newArrayList(entities);
+        doFilter(entityList);
+        super.deleteInBatch(entities);
+    }
+
+    @Override
+    public <S extends T> List<S> save(Iterable<S> entities) {
+        List<S> result = new ArrayList<S>();
+
+        if (entities == null) {
+            return result;
+        }
+
+        for (S entity : entities) {
+            result.add(super.save(entity));
+        }
+
+        doFilter(result);
+
+        return result;
+    }
+
+    @Override
+    public <S extends T> S save(S entity) {
+        S s = super.save(entity);
+
+        doFilter(entity);
+        return s;
+    }
+
+    @Override
+    public <S extends T> S saveAndFlush(S entity) {
+        S s = super.saveAndFlush(entity);
+        doFilter(entity);
+        return s;
+    }
+
+    private <S extends T> void doFilter(Collection<S> entityList){
+        if(null!=dataFilterType){
+            if(entityList.size()!=count("id in ?1",CollectionUtils.extractToList(entityList, "id"))){
+                throw new PlatformException("没有权限!");
+            }
+        }
+    }
+
+    private <S extends T> void doFilter(S entity){
+        if(null!=dataFilterType){
+            if (count("id = ?1",entity.getId())==0) {
+                throw new PlatformException("没有权限!");
+            }
+        }
+    }
+
 
     @Override
     public Class<T> getEntityClass() {
@@ -184,11 +295,21 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
     }
 
 
+    /**
+     * 声明entityClass的查询
+     */
     private Query createQuery(String condition, Sort sort, Object[] objects) {
 
         JpqlQueryHolder queryHolder = new JpqlQueryHolder(condition,sort,objects);
 
         return queryHolder.createQuery();
+    }
+
+    /**
+     * 声明entityClass的查询
+     */
+    private Query createQuery(String condition, Object[] objects) {
+       return createQuery(condition,null,objects);
     }
 
 
@@ -221,7 +342,6 @@ public class PlatformRepositoryImpl<T,ID extends Serializable> extends SimpleJpa
             this.condition = trimToNull(condition);
             this.objects = objects;
         }
-
 
         private Query createQuery(){
             StringBuilder sb = new StringBuilder();

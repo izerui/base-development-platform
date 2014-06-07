@@ -23,5 +23,5 @@ import xxx.yyy.sys.rbac.model.User;
  * Created by serv on 2014/6/1.
  */
 @Repository
-public interface UserRepository extends PlatformJpaRepository<User,String> {
+public interface UserRepository extends PlatformJpaRepository<User> {
 }

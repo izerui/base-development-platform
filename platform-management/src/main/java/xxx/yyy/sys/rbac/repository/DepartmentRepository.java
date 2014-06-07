@@ -23,5 +23,5 @@ import xxx.yyy.sys.rbac.model.Department;
  * Created by serv on 2014/6/1.
  */
 @Repository
-public interface DepartmentRepository extends PlatformJpaRepository<Department,String> {
+public interface DepartmentRepository extends PlatformJpaRepository<Department> {
 }
