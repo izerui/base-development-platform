@@ -15,6 +15,7 @@
  */
 package xxx.yyy.sys.testtable;
 
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -24,10 +25,6 @@ import xxx.yyy.sys.test.model.TestTable;
 import xxx.yyy.sys.test.service.TestTableService;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by serv on 14-5-30.
@@ -44,17 +41,18 @@ public class TestTableTest extends BaseTest {
         TestTable t = new  TestTable();
         t.setIid(0);
         t.setName("ddddf");
-        t.setDeptId("fff");
         t.setDeptId("ff");
         testTableService.dataFilter(DataFilterType.CREATE).save(t);
     }
+
     @Test
+    @DatabaseSetup(value = "classpath:expectedData.xml")
     public void list(){
-        List<Integer> it = new ArrayList<>();
-        it.add(0);
-        it.add(1);
-        long count = testTableService.count("iid in ?1 ",it);
-        assertThat(count).isGreaterThan(0);
+//        List<Integer> it = new ArrayList<>();
+//        it.add(0);
+//        it.add(1);
+//        long count = testTableService.count("iid in ?1 ",it);
+//        assertThat(count).isGreaterThan(0);
     }
     @Test
     public void testIn(){

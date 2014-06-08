@@ -15,13 +15,13 @@
  */
 package xxx.yyy.sys.base.model;
 
-import com.google.common.collect.Lists;
 import xxx.yyy.framework.common.utilities.CollectionUtils;
 import xxx.yyy.framework.common.utilities.Treeable;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -34,28 +34,17 @@ import java.util.List;
 public abstract class BaseTreeInfoModel extends BaseInfoModel implements Treeable {
 
 
-    protected BaseTreeInfoModel(String type) {
-        this.type = type;
+    public BaseTreeInfoModel() {
     }
 
-    /**
-	 * 当前分类是否为父类型
-	 */
-    @Column(name="IS_PARENT")
-	protected  Boolean isParent = false;
+    public BaseTreeInfoModel(String type) {
+        this.type = type;
+    }
 
 
     @Column(name = "TYPE", nullable = false, length = 2)
     protected String type;
 
-
-    public Boolean getIsParent() {
-        return isParent;
-    }
-
-    public void setIsParent(Boolean isParent) {
-        this.isParent = isParent;
-    }
 
     /**
      * 获取父类名称
@@ -100,9 +89,13 @@ public abstract class BaseTreeInfoModel extends BaseInfoModel implements Treeabl
      * @return 一个新的集合
      */
     public List mergerTolist(boolean containsSelf , String ignoreType){
-        List<? extends Treeable> list = containsSelf ? Lists.newArrayList(this) : getChildren();
+        List list = new ArrayList<>();
+        if(containsSelf){
+            list.add(this);
+        }
+        list.addAll(CollectionUtils.mergerChildrenTree(this.getChildren(), ignoreType));
 
-        return CollectionUtils.mergerChildrenTree(this.getChildren() , ignoreType);
+        return list;
     }
 
     /**
@@ -112,9 +105,13 @@ public abstract class BaseTreeInfoModel extends BaseInfoModel implements Treeabl
      * @return
      */
     public List formatToTree(boolean containsSelf,String ignoreType){
-        List<? extends Treeable> list = containsSelf ? Lists.newArrayList(this) : getChildren();
 
-        return CollectionUtils.formatToTree(list,ignoreType);
+        List list = new ArrayList<>();
+        if(containsSelf){
+            list.add(this);
+        }
+        list.addAll(CollectionUtils.formatToTree(getChildren(),ignoreType));
+        return list;
 
     }
 

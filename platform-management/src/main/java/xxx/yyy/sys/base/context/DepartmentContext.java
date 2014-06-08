@@ -37,9 +37,9 @@ public class DepartmentContext extends AbstractDeptTriangleContext{
     private final static String IGNORE_ORG_GROUP = DepartmentType.ORGANIZATION.getValue()+","+DepartmentType.GROUP.getValue();
 
     //包含自身和所有子部门的列表
-    private List<Department> childList = Lists.newArrayList();
+    private List<Department> childList;
     protected Department defaultDepartment;
-    protected List<Department> containsParentList = Lists.newArrayList();
+    protected List<Department> containsParentList;
 
     public DepartmentContext(User user) {
         super(user);
@@ -48,6 +48,9 @@ public class DepartmentContext extends AbstractDeptTriangleContext{
     @Override
     protected void init() {
         super.init();
+        childList = Lists.newArrayList();
+        containsParentList = Lists.newArrayList();
+
         //循环当前用户的多个关联部门， 分别获取部门的子部门，并且统一合并到 childList中 （当前用户的所有关联部门和子部门的合集）
         for(Department dept : getIgnoreTypeList(IGNORE_ORG_GROUP)){
             childList.addAll(SpringContextHolder.getBean(DepartmentService.class).getOne(dept.getId()).mergerTolist(true,IGNORE_ORG_GROUP));

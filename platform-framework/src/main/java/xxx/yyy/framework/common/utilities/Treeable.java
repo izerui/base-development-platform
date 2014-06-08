@@ -34,10 +34,6 @@ public interface Treeable {
 
     String getParentName();
 
-    Boolean getIsParent();
-
-    void setIsParent(Boolean isParent);
-
     <T extends Treeable> List<T> getChildren();
 
 

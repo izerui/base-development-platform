@@ -162,6 +162,7 @@ public class CollectionUtils extends org.apache.commons.collections.CollectionUt
         List result = new ArrayList();
 
         for (Treeable r : list) {
+            //顶级节点
             if (r.getParent() == null && (ignoreType==null|| !ArrayUtils.contains(StringUtils.split(ignoreType,","),r.getType()))) {
                 mergeResourcesToParent(list,r,ignoreType);
                 result.add(r);
@@ -181,12 +182,10 @@ public class CollectionUtils extends org.apache.commons.collections.CollectionUt
      * @param ignoreType 不需要加入到parent的资源类型 忽略的类型,多个 以 , 区分
      */
     private static void mergeResourcesToParent(List<? extends Treeable> list, Treeable parent,String ignoreType) {
-        if (!parent.getIsParent()) {
-            return ;
+        if(null==list){
+            return;
         }
-
         parent.getChildren().clear();
-        parent.setIsParent(false);
 
         for (Treeable r: list) {
             //这是一个递归过程，如果当前遍历的r资源的parentId等于parent父类对象的id，将会在次递归r对象。通过遍历list是否也存在r对象的子级。
@@ -194,7 +193,6 @@ public class CollectionUtils extends org.apache.commons.collections.CollectionUt
                 r.getChildren().clear();
                 mergeResourcesToParent(list,r,ignoreType);
                 parent.getChildren().add(r);
-                parent.setIsParent(true);
             }
 
         }

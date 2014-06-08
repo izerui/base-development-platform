@@ -34,6 +34,7 @@ import java.util.List;
 public class Department extends BaseTreeInfoModel{
 
 
+
     /**
      * 父分类
      */
@@ -79,8 +80,13 @@ public class Department extends BaseTreeInfoModel{
      * 构造方法
      * @param type
      */
-    protected Department(String type) {
+    public Department(String type) {
         super(type);
+    }
+    /**
+     * 构造方法
+     */
+    public Department() {
     }
 
 

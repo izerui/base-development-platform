@@ -439,6 +439,15 @@
             <artifactId>flyway-core</artifactId>
             <version>${com.googlecode.flyway.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.springtestdbunit</groupId>
+            <artifactId>spring-test-dbunit</artifactId>
+            <version>1.1.0</version>
+            <scope>test</scope>
+        </dependency>
+
+
+
         <!-- flyway end -->
         <!-- kaptcha start -->
         <dependency>

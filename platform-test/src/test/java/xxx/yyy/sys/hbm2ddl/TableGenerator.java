@@ -15,6 +15,7 @@
  */
 package xxx.yyy.sys.hbm2ddl;
 
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 import org.junit.Test;
 import xxx.yyy.sys.base.BaseTest;
 
@@ -23,7 +24,10 @@ import xxx.yyy.sys.base.BaseTest;
  */
 public class TableGenerator extends BaseTest{
     @Test
+    @DatabaseSetup(value = "classpath:db/xml/DATA.xml")
     public void init(){
         log.debug("同步到数据库");
+
     }
+
 }

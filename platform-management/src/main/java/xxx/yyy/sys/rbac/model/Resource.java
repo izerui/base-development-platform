@@ -76,6 +76,11 @@ public class Resource extends BaseTreeInfoModel{
     public Resource(String type) {
         super(type);
     }
+    /**
+     * 构造方法
+     */
+    public Resource() {
+    }
 
     /**
 	 * 获取资源权限url

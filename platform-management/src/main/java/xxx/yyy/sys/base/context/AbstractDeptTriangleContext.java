@@ -1,6 +1,5 @@
 package xxx.yyy.sys.base.context;
 
-import com.google.common.collect.Lists;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -19,7 +18,7 @@ import java.util.List;
 public abstract class AbstractDeptTriangleContext extends AbstractUserContext{
 
 
-    private List<Department> departmentList = Lists.newArrayList();
+    private List<Department> departmentList;
 
     @Override
     protected void init() {

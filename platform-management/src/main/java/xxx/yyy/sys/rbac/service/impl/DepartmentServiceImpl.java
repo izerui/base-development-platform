@@ -39,13 +39,12 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department> implement
      * @return
      */
     public  Department findRootDept(String deptId){
-
         Department dept = findOne(deptId);
         if(dept==null){
             return null;
         }
 
-        while(dept.getOrgId()!=null&&(!dept.getId().equals(dept.getOrgId()))){
+        while(dept.getParent()!=null){
             dept = findOne(dept.getOrgId());
         }
 
