@@ -59,12 +59,5 @@
 
     <bean  id="springContextHolder"  class="xxx.yyy.framework.common.application.SpringContextHolder" lazy-init="false"/>
 
-    <!--<bean id="dbMigration" class="com.googlecode.flyway.core.Flyway"-->
-          <!--init-method="migrate">-->
-        <!--<property name="locations" value="classpath:db/migration/${database}" />-->
-        <!--<property name="dataSource" ref="dataSource" />-->
-        <!--<property name="initOnMigrate" value="true" />-->
-    <!--</bean>-->
-
 
 </beans>

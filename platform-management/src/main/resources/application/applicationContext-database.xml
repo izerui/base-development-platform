@@ -105,4 +105,13 @@
 		</property>
 	</bean>
 
+    <bean id="dbMigration" class="com.googlecode.flyway.core.Flyway"
+          init-method="migrate" depends-on="entityManagerFactory" lazy-init="false">
+        <property name="locations" value="classpath:db/migration/${database}" />
+        <property name="dataSource" ref="dataSource" />
+        <property name="initOnMigrate" value="true" />
+    </bean>
+
+
+
 </beans>
