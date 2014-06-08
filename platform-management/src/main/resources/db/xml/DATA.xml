@@ -6,10 +6,10 @@
             GENDER="1" PASSWORD="21232f297a57a5a743894a0e4a801fc3"   SECRET_LEVEL="1"/>
     <!-- 机构 -->
   <SYS_RBAC_DEPARTMENT ID="8b555c806edd2b848c7c8fa3e5e70761" DELETE_STATUS="0" SORT="1"
-                       VERSION="0" NAME="北京航空航天大学" STATE="1" IS_PARENT="1" CODE="thams" SHORT_NAME="北航" TYPE="1" />
+                       VERSION="0" NAME="北京航空航天大学" STATE="1" CODE="thams" SHORT_NAME="北航" TYPE="1" />
     <!-- 部门 -->
   <SYS_RBAC_DEPARTMENT ID="178aa764bf10459cdbaac1d4a5d900e9" DELETE_STATUS="0" ORG_ID="8b555c806edd2b848c7c8fa3e5e70761" SORT="2"
-                       VERSION="0" NAME="信息中心" STATE="1" IS_PARENT="0" CODE="it" SHORT_NAME="信息中心" TYPE="0" />
+                       VERSION="0" NAME="信息中心" STATE="1" CODE="it" SHORT_NAME="信息中心" TYPE="0" />
     <!-- 岗位 -->
   <SYS_RBAC_POST ID="96ab96c7198ed33ed47cd5724a79e7e9" DELETE_STATUS="0" ORG_ID="8b555c806edd2b848c7c8fa3e5e70761"
                    SORT="0" VERSION="0" NAME="校长" STATE="1"/>
@@ -19,7 +19,7 @@
 
     <!-- 资源 -->
   <SYS_RBAC_RESOURCE ID="c0c55587b5f64143ae4a3839124ff71e" DELETE_STATUS="0" ORG_ID="8b555c806edd2b848c7c8fa3e5e70761" SORT="0" VERSION="0"
-                     NAME="管理后台" STATE="1" IS_PARENT="1" PERMISSION="perms[sytem]" TYPE="01" URL="/system" VALUE="/system/**"/>
+                     NAME="管理后台" STATE="1" PERMISSION="perms[sytem]" TYPE="01" URL="/system" VALUE="/system/**"/>
 
     <SYS_RBAC_USER_DEPT SYS_RBAC_USER_ID="admin"  	SYS_RBAC_DEPT_ID="178aa764bf10459cdbaac1d4a5d900e9"/>
     <SYS_RBAC_ROLE_USER SYS_RBAC_USER_ID="admin"  	SYS_RBAC_ROLE_ID="4a1196ddfaa5e649aecd83833aaa4dba"/>
