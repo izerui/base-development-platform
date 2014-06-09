@@ -15,6 +15,8 @@ package xxx.yyy.sys.base; /**
  */
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.junit.Before;
@@ -51,6 +53,7 @@ import static org.mockito.Mockito.when;
         DirtiesContextTestExecutionListener.class,
         TransactionalTestExecutionListener.class,
         DbUnitTestExecutionListener.class })
+@DatabaseSetup(value = "classpath:DELETE_ALL.xml",type = DatabaseOperation.DELETE_ALL)
 public abstract class BaseTest extends AbstractTransactionalJUnit4SpringContextTests {
 	protected Logger log = LoggerFactory.getLogger(getClass());
 

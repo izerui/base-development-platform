@@ -36,7 +36,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Created by serv on 14-5-30.
  */
-@DatabaseSetup("classpath:TEST_TABLE.xml")
 public class TestTableTest extends BaseTest {
 
     @Autowired
@@ -51,18 +50,12 @@ public class TestTableTest extends BaseTest {
         testTableService.dataFilter(DataFilterType.CREATE).save(t);
     }
 
+    //运行之前请运行TableGenerator.init() 用来初始化rbac测试数据
     @Test
+    @DatabaseSetup({"classpath:TEST_TABLE.xml","classpath:RBAC.xml"})
     public void list(){
-        assertThat(testTableService.findAll("id in ?1 ", Lists.newArrayList("1","2","3","4"))).hasSize(4);
-        assertThat(testTableService.dataFilter(DataFilterType.READ).findAll("id in ?1",Lists.newArrayList("1","2","3","4"))).hasSize(3);
-    }
-    @Test
-    public void testIn(){
-        Iterable<TestTable> all = testTableService.findAll("x.iid in (select t.iid from TestTable t )");
-        testTableService.dataFilter(DataFilterType.READ).findAll();
-        testTableService.findAll("name like ?1",new PageRequest(1,20),"%周扒皮%");
-        testTableService.getOne("uuid");
-        testTableService.queryUnDeleted().count();
+        assertThat(testTableService.queryUnDeleted().findAll("id in ?1 ", Lists.newArrayList("1","2","3","4"))).hasSize(4);
+        assertThat(testTableService.queryUnDeleted().dataFilter(DataFilterType.READ).findAll("id in ?1",Lists.newArrayList("1","2","3","4"))).hasSize(3);
     }
 
 

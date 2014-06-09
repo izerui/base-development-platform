@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <SYS_RBAC_USER/>
+    <SYS_RBAC_DEPARTMENT/>
+    <SYS_RBAC_POST />
+    <SYS_RBAC_ROLE />
+    <SYS_RBAC_RESOURCE />
+    <SYS_RBAC_USER_DEPT />
+    <SYS_RBAC_ROLE_USER />
+    <SYS_RBAC_POST_USER />
+    <SYS_RBAC_ROLE_RESOURCE />
+    <TEST_TABLE/>
+</dataset>
