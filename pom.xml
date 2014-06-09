@@ -445,7 +445,11 @@
             <version>1.1.0</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.dbunit</groupId>
+            <artifactId>dbunit</artifactId>
+            <version>2.5.0</version>
+        </dependency>
 
 
         <!-- flyway end -->
