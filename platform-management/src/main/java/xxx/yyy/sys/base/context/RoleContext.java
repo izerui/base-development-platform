@@ -33,7 +33,7 @@ public class RoleContext extends AbstractUserContext{
     //系统管理员角色名
     private final static String SYSTEM_SUPER_ADMIN_ROLE_NAME = "system";
 
-    private List<Role> roleList = Lists.newArrayList();
+    private List<Role> roleList;
 
     public RoleContext(User user) {
         super(user);

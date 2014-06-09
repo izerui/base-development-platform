@@ -16,6 +16,8 @@
 package xxx.yyy.sys.testtable;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.google.common.collect.Lists;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -25,16 +27,20 @@ import xxx.yyy.sys.test.model.TestTable;
 import xxx.yyy.sys.test.service.TestTableService;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by serv on 14-5-30.
  */
+@DatabaseSetup("classpath:TEST_TABLE.xml")
 public class TestTableTest extends BaseTest {
 
     @Autowired
     TestTableService testTableService;
-
-
 
     @Test
     public void insert() throws IOException {
@@ -46,13 +52,9 @@ public class TestTableTest extends BaseTest {
     }
 
     @Test
-    @DatabaseSetup(value = "classpath:expectedData.xml")
     public void list(){
-//        List<Integer> it = new ArrayList<>();
-//        it.add(0);
-//        it.add(1);
-//        long count = testTableService.count("iid in ?1 ",it);
-//        assertThat(count).isGreaterThan(0);
+        assertThat(testTableService.findAll("id in ?1 ", Lists.newArrayList("1","2","3","4"))).hasSize(4);
+        assertThat(testTableService.dataFilter(DataFilterType.READ).findAll("id in ?1",Lists.newArrayList("1","2","3","4"))).hasSize(3);
     }
     @Test
     public void testIn(){

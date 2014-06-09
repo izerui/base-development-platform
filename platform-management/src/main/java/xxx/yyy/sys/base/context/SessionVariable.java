@@ -15,6 +15,8 @@
  */
 package xxx.yyy.sys.base.context;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.collections.Transformer;
@@ -151,13 +153,12 @@ public class SessionVariable implements FilterContext{
      * @return jpql 列表
      */
     public Collection<String> getFilterRuleJpqlList(final Class modelClass, final String dataFilterType) {
-        return (Collection<String>) CollectionUtils.transformedCollection(filterRuleList, new Transformer() {
+        return Collections2.transform(filterRuleList,new Function<FilterRule, String>() {
             @Override
-            public Object transform(Object input) {
-                FilterRule fr = (FilterRule) input;
-                if (StringUtils.equals(modelClass.getName(), fr.getModelClassName())) {
-                    if (StringUtils.equals(dataFilterType, fr.getOperationType())) {
-                        return fr.getConditionJpql();
+            public String apply(FilterRule input) {
+                if (StringUtils.equals(modelClass.getName(), input.getModelClassName())) {
+                    if (StringUtils.equals(dataFilterType, input.getOperationType())) {
+                        return input.getConditionJpql();
                     }
                 }
                 return null;
@@ -177,11 +178,12 @@ public class SessionVariable implements FilterContext{
         filterParameters.put("userId", getUser().getId());
         filterParameters.put("userOrgId", getOrgContext().getOrgId());
         filterParameters.put("userParantDeptIds", getDepartmentContext().getContainsParentIds());
-        filterParameters.put("userDefaultDept", getDepartmentContext().getDefaultDeptId());
+        filterParameters.put("userDeptIds", getDepartmentContext().getContainsParentIds());
+        filterParameters.put("userDefaultDeptId", getDepartmentContext().getDefaultDeptId());
         filterParameters.put("userChildDeptIds", getDepartmentContext().getChildDepartmentIds());
         filterParameters.put("userChildOrgIds", getOrgContext().getChildOrgIds());
         filterParameters.put("userSecretLevel",getUser().getSecretLevel());
-        filterParameters.put("dataNow",new DateTime().toDate());
+        filterParameters.put("dateNow",new DateTime().toDate());
         return filterParameters;
     }
 

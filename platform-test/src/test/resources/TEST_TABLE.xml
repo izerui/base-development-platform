@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <TEST_TABLE id="1" iid="11" DEPT_ID="178aa764bf10459cdbaac1d4a5d900e9" ORG_ID="8b555c806edd2b848c7c8fa3e5e70761" NAME="大大" delete_status="0" sort="9" version="0" business_status="0" create_user_id="admin"/>
+    <TEST_TABLE id="2" iid="22" DEPT_ID="178aa764bf10459cdbaac1d4a5d900e9" ORG_ID="8b555c806edd2b848c7c8fa3e5e70761" NAME="未完" delete_status="0" sort="9" version="0" business_status="0" create_user_id="admin"/>
+    <TEST_TABLE id="3" iid="33" DEPT_ID="178aa764bf10459cdbaac1d4a5d900e9" ORG_ID="8b555c806edd2b848c7c8fa3e5e70761" NAME="非" delete_status="0" sort="9" version="0" business_status="0" create_user_id="admin"/>
+    <TEST_TABLE id="4" iid="44" DEPT_ID="1dfsdfsdfds9" ORG_ID="8b555c806edd2b848c7c8fa3e5e70761" NAME="视为敌人" delete_status="0" sort="9" version="0" business_status="0" create_user_id="admin1"/>
+    <TEST_TABLE id="5" iid="55" DEPT_ID="178aa76wefwef0e9" ORG_ID="8b555c806edd2b848c7c8fa3e5e70761" NAME="费 更改" delete_status="0" sort="9" version="0" business_status="0" create_user_id="admin1"/>
+    <SYS_FILTER_RULE id="111" name="查看本部门内数据" CONDITION_JPQL="x.deptId = :userDeptIds" MODEL_CLASS_NAME="xxx.yyy.sys.test.model.TestTable" DELETE_STATUS="0" sort="0" version="0" state="1" RELATION_ID="admin" RELATION_TYPE="user" OPERATION_TYPE="READ" />
+    <SYS_FILTER_RULE id="222" name="查看本人数据" CONDITION_JPQL="x.creatorUserId = :userId" MODEL_CLASS_NAME="xxx.yyy.sys.test.model.TestTable" DELETE_STATUS="0" sort="0" version="0" state="1" RELATION_ID="96ab96c7198ed33ed47cd5724a79e7e9" RELATION_TYPE="post" OPERATION_TYPE="READ" />
+</dataset>

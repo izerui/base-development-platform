@@ -30,11 +30,6 @@ public class SecurityTest extends BaseTest {
     @Autowired
     AccountService accountService;
 
-
-    @Override
-    public void setTestUser() {
-    }
-
     @Test
     public void testSelectService(){
         accountService.queryDeleted().findAll();
