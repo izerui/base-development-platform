@@ -60,6 +60,10 @@ public abstract class BaseBusinessModel extends BaseModel{
     @Column(name = "CREATE_DATE", updatable = false)
     protected Date createDate =  null ;
 
+    //密级,整数越大,密级越高
+    @Column(name = "SECRET_LEVEL",nullable = false)
+    protected Integer secretLevel = 0;
+
     public String getCreatorUserId() {
         return creatorUserId;
     }
@@ -106,6 +110,15 @@ public abstract class BaseBusinessModel extends BaseModel{
 
     public void setAuditDate(Date auditDate) {
         this.auditDate = auditDate;
+    }
+
+
+    public Integer getSecretLevel() {
+        return secretLevel;
+    }
+
+    public void setSecretLevel(Integer secretLevel) {
+        this.secretLevel = secretLevel;
     }
 
     @PreUpdate

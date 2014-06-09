@@ -1,11 +1,12 @@
 package xxx.yyy.sys.base.context;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import xxx.yyy.framework.common.enumeration.DepartmentType;
-import xxx.yyy.framework.common.utilities.CollectionUtils;
 import xxx.yyy.sys.rbac.model.Department;
 import xxx.yyy.sys.rbac.model.User;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * 群组上下文
@@ -25,8 +26,13 @@ public class GroupContext extends AbstractDeptTriangleContext {
      *
      * @return
      */
-    public List<String> getGroupIds() {
-        return CollectionUtils.extractToList(getGroupList(),"id");
+    public Collection<String> getGroupIds() {
+        return Collections2.transform(getGroupList(),new Function<Department, String>() {
+            @Override
+            public String apply(Department input) {
+                return input.getId();
+            }
+        });
     }
 
 
@@ -35,7 +41,7 @@ public class GroupContext extends AbstractDeptTriangleContext {
      *
      * @return
      */
-    public List<Department> getGroupList() {
+    public Collection<Department> getGroupList() {
         return getIgnoreTypeList(IGNORE_ORG_DEPARTMENT);
     }
 

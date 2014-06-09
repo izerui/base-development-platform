@@ -1,14 +1,17 @@
 package xxx.yyy.sys.base.context;
 
-import org.apache.commons.collections.Predicate;
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
 import org.apache.commons.lang3.StringUtils;
 import xxx.yyy.framework.common.application.SpringContextHolder;
 import xxx.yyy.framework.common.enumeration.DepartmentType;
-import xxx.yyy.framework.common.utilities.CollectionUtils;
 import xxx.yyy.sys.rbac.model.Department;
 import xxx.yyy.sys.rbac.model.User;
 import xxx.yyy.sys.rbac.service.DepartmentService;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -39,16 +42,13 @@ public class OrgContext extends AbstractDeptTriangleContext {
             childOrgList = SpringContextHolder.getBean(DepartmentService.class).getOne(getOrgId()).mergerTolist(true,IGNORE_DEPT_GROUP);
 
         }
-        org = (Department) CollectionUtils.find(childOrgList,new Predicate() {
+        org = Iterables.find(childOrgList,new Predicate<Department>() {
             @Override
-            public boolean evaluate(Object object) {
-                Department orgDept = (Department) object;
-                if(StringUtils.equals(orgDept.getId(), getOrgId())){
-                    return true;
-                }
-                return false;
+            public boolean apply(Department input) {
+                return StringUtils.equals(input.getId(), getOrgId());
             }
         });
+
     }
 
     /**
@@ -56,8 +56,13 @@ public class OrgContext extends AbstractDeptTriangleContext {
      *
      * @return
      */
-    public List<String> getChildOrgIds() {
-        return CollectionUtils.extractToList(childOrgList,"id");
+    public Collection<String> getChildOrgIds() {
+        return Collections2.transform(childOrgList, new Function<Department, String>() {
+            @Override
+            public String apply(Department input) {
+                return input.getId();
+            }
+        });
     }
 
     /**

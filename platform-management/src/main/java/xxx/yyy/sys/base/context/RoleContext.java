@@ -15,13 +15,15 @@
  */
 package xxx.yyy.sys.base.context;
 
-import com.google.common.collect.Lists;
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
 import xxx.yyy.framework.common.application.SpringContextHolder;
-import xxx.yyy.framework.common.utilities.CollectionUtils;
 import xxx.yyy.sys.rbac.model.Role;
 import xxx.yyy.sys.rbac.model.User;
 import xxx.yyy.sys.rbac.service.AccountService;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -51,7 +53,7 @@ public class RoleContext extends AbstractUserContext{
      * @return 当前用户是否拥有某角色
      */
     public boolean checkRole(String role) {
-        return org.springframework.util.CollectionUtils.contains(this.geRoleNames().iterator(), role);
+        return Iterables.contains(this.geRoleNames(),role);
     }
 
 
@@ -60,8 +62,13 @@ public class RoleContext extends AbstractUserContext{
      *
      * @return
      */
-    public List<String> geRoleNames() {
-        return CollectionUtils.extractToList(roleList,"name");
+    public Collection<String> geRoleNames() {
+        return Collections2.transform(roleList,new Function<Role, String>() {
+            @Override
+            public String apply(Role input) {
+                return input.getName();
+            }
+        });
     }
 
 
@@ -70,8 +77,13 @@ public class RoleContext extends AbstractUserContext{
      *
      * @return
      */
-    public List<String> getRoleIds() {
-        return CollectionUtils.extractToList(roleList,"id");
+    public Collection<String> getRoleIds() {
+        return Collections2.transform(roleList,new Function<Role, String>() {
+            @Override
+            public String apply(Role input) {
+                return input.getId();
+            }
+        });
     }
 
     /**

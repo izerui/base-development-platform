@@ -1,14 +1,15 @@
 package xxx.yyy.sys.base.context;
 
-import org.apache.commons.collections.Transformer;
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import xxx.yyy.framework.common.application.SpringContextHolder;
-import xxx.yyy.framework.common.utilities.CollectionUtils;
 import xxx.yyy.sys.rbac.model.Department;
 import xxx.yyy.sys.rbac.model.User;
 import xxx.yyy.sys.rbac.service.AccountService;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -36,14 +37,12 @@ public abstract class AbstractDeptTriangleContext extends AbstractUserContext{
      * @param ignoreTypes
      * @return
      */
-    protected List<Department> getIgnoreTypeList(final String ignoreTypes){
-
-        return (List<Department>) CollectionUtils.collect(departmentList, new Transformer() {
+    protected Collection<Department> getIgnoreTypeList(final String ignoreTypes){
+        return Collections2.transform(departmentList,new Function<Department, Department>() {
             @Override
-            public Object transform(Object o) {
-                Department t = (Department) o;
-                if (ignoreTypes == null || !ArrayUtils.contains(StringUtils.split(","), t.getType())) {
-                    return t;
+            public Department apply(Department input) {
+                if (ignoreTypes == null || !ArrayUtils.contains(StringUtils.split(","), input.getType())) {
+                    return input;
                 }
                 return null;
             }

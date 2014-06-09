@@ -15,12 +15,14 @@
  */
 package xxx.yyy.sys.base.context;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import xxx.yyy.framework.common.application.SpringContextHolder;
-import xxx.yyy.framework.common.utilities.CollectionUtils;
 import xxx.yyy.sys.rbac.model.Post;
 import xxx.yyy.sys.rbac.model.User;
 import xxx.yyy.sys.rbac.service.PostService;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -47,8 +49,13 @@ public class PostContext extends AbstractUserContext{
      *
      * @return
      */
-    public List<String> getPostIds() {
-        return CollectionUtils.extractToList(postList, "id");
+    public Collection<String> getPostIds() {
+        return Collections2.transform(postList, new Function<Post, String>() {
+            @Override
+            public String apply(Post input) {
+                return input.getId();
+            }
+        });
     }
 
     /**
