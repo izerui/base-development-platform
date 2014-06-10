@@ -15,12 +15,21 @@
  */
 package xxx.yyy.sys.security;
 
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.google.common.collect.Lists;
+import org.assertj.core.api.Condition;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import xxx.yyy.sys.base.BaseTest;
+import xxx.yyy.sys.base.jpa.cmd.Command;
 import xxx.yyy.sys.rbac.model.User;
 import xxx.yyy.sys.rbac.service.AccountService;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by serv on 2014/6/2.
@@ -61,5 +70,26 @@ public class SecurityTest extends BaseTest {
         user.setEmail("fff");
         user.setPassword("ddddfsdfsdfsdfsdf");
         accountService.save(Lists.newArrayList(user,user2));
+    }
+
+    @Test
+    @DatabaseSetup("classpath:RBAC.xml")
+    public void testCommand(){
+        accountService.executeCommand(new Command() {
+            @Override
+            public Object execute(EntityManager entityManager) {
+                Query query = entityManager.createQuery("select u from User u");
+                List resultList = query.getResultList();
+                assertThat(resultList).have(new Condition() {
+                    @Override
+                    public boolean matches(Object value) {
+                        User user = (User) value;
+                        return user.getId().equals("admin");
+                    }
+                });
+                log.info("测试数据 ：{}",resultList.toString());
+                return null;
+            }
+        });
     }
 }

@@ -75,25 +75,5 @@ public class TestTableTest extends BaseTest {
         testTableService.dataFilter(DataFilterType.CREATE).save(t);
     }
 
-    @Test
-    @DatabaseSetup("classpath:RBAC.xml")
-    public void testCommand(){
-        testTableService.executeCommand(new Command() {
-            @Override
-            public Object execute(EntityManager entityManager) {
-                Query query = entityManager.createQuery("select u from User u");
-                List resultList = query.getResultList();
-                assertThat(resultList).have(new Condition() {
-                    @Override
-                    public boolean matches(Object value) {
-                        User user = (User) value;
-                        return user.getId().equals("admin");
-                    }
-                });
-                log.info("测试数据 ：{}",resultList.toString());
-                return null;
-            }
-        });
-    }
 
 }
