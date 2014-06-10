@@ -16,7 +16,9 @@
 package xxx.yyy.sys.base.context;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
@@ -152,7 +154,7 @@ public class SessionVariable implements FilterContext{
      * @return jpql 列表
      */
     public Collection<String> getFilterRuleJpqlList(final Class modelClass, final String dataFilterType , final String orgId) {
-        return Collections2.transform(filterRuleList,new Function<FilterRule, String>() {
+        Collection<String> result = Collections2.transform(filterRuleList,new Function<FilterRule, String>() {
             @Override
             public String apply(FilterRule input) {
                 if (StringUtils.equals(modelClass.getName(), input.getModelClassName())) {
@@ -168,6 +170,7 @@ public class SessionVariable implements FilterContext{
                 return null;
             }
         });
+        return Collections2.filter(result,Predicates.notNull());
     }
 
 

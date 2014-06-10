@@ -49,9 +49,8 @@ import static org.mockito.Mockito.when;
         "classpath*:application/applicationContext-database.xml",
         "classpath*:application/*/*/applicationContext*.xml"})
 @TransactionConfiguration(defaultRollback = false)
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+@TestExecutionListeners({
         DirtiesContextTestExecutionListener.class,
-        TransactionalTestExecutionListener.class,
         DbUnitTestExecutionListener.class })
 @DatabaseSetup(value = "classpath:DELETE_ALL.xml",type = DatabaseOperation.DELETE_ALL)
 public abstract class BaseTest extends AbstractTransactionalJUnit4SpringContextTests {

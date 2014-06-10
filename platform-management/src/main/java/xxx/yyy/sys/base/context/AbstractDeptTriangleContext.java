@@ -1,6 +1,7 @@
 package xxx.yyy.sys.base.context;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -38,7 +39,7 @@ public abstract class AbstractDeptTriangleContext extends AbstractUserContext{
      * @return
      */
     protected Collection<Department> getIgnoreTypeList(final String ignoreTypes){
-        return Collections2.transform(departmentList,new Function<Department, Department>() {
+        Collection<Department> result = Collections2.transform(departmentList,new Function<Department, Department>() {
             @Override
             public Department apply(Department input) {
                 if (ignoreTypes == null || !ArrayUtils.contains(StringUtils.split(","), input.getType())) {
@@ -47,6 +48,7 @@ public abstract class AbstractDeptTriangleContext extends AbstractUserContext{
                 return null;
             }
         });
+        return Collections2.filter(result, Predicates.notNull());
     }
 
 

@@ -21,6 +21,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.transaction.support.TransactionTemplate;
 import xxx.yyy.sys.base.BaseTest;
 import xxx.yyy.sys.datafilter.DataFilterType;
 import xxx.yyy.sys.test.model.TestTable;
@@ -50,12 +51,23 @@ public class TestTableTest extends BaseTest {
         testTableService.dataFilter(DataFilterType.CREATE).save(t);
     }
 
-    //运行之前请运行TableGenerator.init() 用来初始化rbac测试数据
     @Test
     @DatabaseSetup({"classpath:TEST_TABLE.xml","classpath:RBAC.xml"})
     public void list(){
         assertThat(testTableService.queryUnDeleted().findAll("id in ?1 ", Lists.newArrayList("1","2","3","4"))).hasSize(4);
         assertThat(testTableService.queryUnDeleted().dataFilter(DataFilterType.READ).findAll("id in ?1",Lists.newArrayList("1","2","3","4"))).hasSize(3);
+    }
+
+    @Test
+    @DatabaseSetup({"classpath:TEST_TABLE.xml","classpath:RBAC.xml"})
+    public void testCreate(){
+        TestTable t  = new TestTable();
+        t.setIid(2);
+        t.setName("测试数据");
+        //尝试注释掉下面一行 ， 则可以权限验证通过
+        t.setDeptId("非本部门的数据");
+        //会跑出异常，提示没有权限
+        testTableService.dataFilter(DataFilterType.CREATE).save(t);
     }
 
 
