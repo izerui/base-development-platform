@@ -18,15 +18,20 @@ package xxx.yyy.sys.testtable;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.google.common.collect.Lists;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.Condition;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.support.TransactionTemplate;
 import xxx.yyy.sys.base.BaseTest;
+import xxx.yyy.sys.base.jpa.cmd.Command;
 import xxx.yyy.sys.datafilter.DataFilterType;
+import xxx.yyy.sys.rbac.model.User;
 import xxx.yyy.sys.test.model.TestTable;
 import xxx.yyy.sys.test.service.TestTableService;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,5 +75,25 @@ public class TestTableTest extends BaseTest {
         testTableService.dataFilter(DataFilterType.CREATE).save(t);
     }
 
+    @Test
+    @DatabaseSetup("classpath:RBAC.xml")
+    public void testCommand(){
+        testTableService.executeCommand(new Command() {
+            @Override
+            public Object execute(EntityManager entityManager) {
+                Query query = entityManager.createQuery("select u from User u");
+                List resultList = query.getResultList();
+                assertThat(resultList).have(new Condition() {
+                    @Override
+                    public boolean matches(Object value) {
+                        User user = (User) value;
+                        return user.getId().equals("admin");
+                    }
+                });
+                log.info("测试数据 ：{}",resultList.toString());
+                return null;
+            }
+        });
+    }
 
 }
