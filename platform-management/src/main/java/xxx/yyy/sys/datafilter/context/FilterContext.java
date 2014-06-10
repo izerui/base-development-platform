@@ -13,9 +13,10 @@ public interface FilterContext {
      *
      * @param modelClass     操作的entityClass
      * @param dataFilterType 数据过滤类型 {@link xxx.yyy.sys.datafilter.DataFilterType}
+     * @param orgId 单位id
      * @return jpql 列表
      */
-    public Collection<String> getFilterRuleJpqlList(final Class modelClass, final String dataFilterType);
+    public Collection<String> getFilterRuleJpqlList(final Class modelClass, final String dataFilterType,final String orgId);
 
     /**
      * 获取用户的变量map信息

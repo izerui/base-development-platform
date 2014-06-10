@@ -64,8 +64,9 @@ public class SessionVariable implements FilterContext{
         relationIds.addAll(getRoleContext().getRoleIds());//添加所属角色ids
         relationIds.addAll(getDepartmentContext().getDepartmentIds());//添加部门ids
         relationIds.addAll(getPostContext().getPostIds());//添加岗位ids
+        relationIds.addAll(getGroupContext().getGroupIds());//添加群组ids
         //获取用户具有的所有规则权限list
-        filterRuleList = SpringContextHolder.getBean(FilterRuleService.class).queryUnDeleted().findAll("x.relationId in ?1",relationIds);
+        filterRuleList = SpringContextHolder.getBean(FilterRuleService.class).queryUnDeleted().findAll("x.state = 1 and x.relationId in ?1",relationIds);
     }
 
     /**
@@ -150,13 +151,18 @@ public class SessionVariable implements FilterContext{
      * @param dataFilterType 数据过滤类型 {@link xxx.yyy.sys.datafilter.DataFilterType}
      * @return jpql 列表
      */
-    public Collection<String> getFilterRuleJpqlList(final Class modelClass, final String dataFilterType) {
+    public Collection<String> getFilterRuleJpqlList(final Class modelClass, final String dataFilterType , final String orgId) {
         return Collections2.transform(filterRuleList,new Function<FilterRule, String>() {
             @Override
             public String apply(FilterRule input) {
                 if (StringUtils.equals(modelClass.getName(), input.getModelClassName())) {
                     if (StringUtils.equals(dataFilterType, input.getOperationType())) {
-                        return input.getConditionJpql();
+                        if(StringUtils.isBlank(orgId)){//如果为null 则不过滤单位
+                            return "("+input.getConditionJpql()+")";
+                        }
+                        if(StringUtils.equals(input.getOrgId(),orgId)){
+                            return "("+input.getConditionJpql()+")";
+                        }
                     }
                 }
                 return null;
@@ -183,6 +189,7 @@ public class SessionVariable implements FilterContext{
         filterParameters.put("userChildOrgIds", getOrgContext().getChildOrgIds());
         filterParameters.put("userSecretLevel",getUser().getSecretLevel());
         filterParameters.put("dateNow",new DateTime().toDate());
+        filterParameters.put("dateYear",new DateTime().getYear());
         return filterParameters;
     }
 

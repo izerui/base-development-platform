@@ -39,6 +39,12 @@ public interface PlatformJpaRepository<T extends Idable> extends JpaRepository<T
      */
     PlatformJpaRepository<T> queryOrgId(String orgId);
 
+    /**
+     * 附加当前用户的单位约束
+     * @return
+     */
+    PlatformJpaRepository<T> queryOrgId();
+
 
     /**
      * 过滤数据权限 对于 Specification 查询模型方法无效

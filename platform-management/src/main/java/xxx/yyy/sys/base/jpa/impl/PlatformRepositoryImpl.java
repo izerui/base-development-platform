@@ -15,6 +15,8 @@
  */
 package xxx.yyy.sys.base.jpa.impl;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -26,7 +28,6 @@ import org.springframework.data.jpa.repository.support.JpaEntityInformationSuppo
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.util.Assert;
 import xxx.yyy.framework.common.PlatformException;
-import xxx.yyy.framework.common.utilities.CollectionUtils;
 import xxx.yyy.sys.base.context.SystemContextHolder;
 import xxx.yyy.sys.base.jpa.PlatformJpaRepository;
 import xxx.yyy.sys.base.jpa.cmd.Command;
@@ -64,6 +65,12 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
     @Override
     public PlatformJpaRepository<T> queryOrgId(String orgId) {
         this.orgId = orgId;
+        return this;
+    }
+
+    @Override
+    public PlatformJpaRepository<T> queryOrgId() {
+        this.orgId = SystemContextHolder.getSessionContext().getOrgContext().getOrgId();
         return this;
     }
 
@@ -261,7 +268,13 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
 
     private <S extends T> void doFilter(Collection<S> entityList){
         if(null!=dataFilterType){
-            if(entityList.size()!=count("id in ?1",CollectionUtils.extractToList(entityList, "id"))){
+            Collection<String> ids = Collections2.transform(entityList,new Function<S, String>() {
+                @Override
+                public String apply(S input) {
+                    return input.getId();
+                }
+            });
+            if(entityList.size()!=count("id in ?1",ids)){
                 throw new PlatformException("没有权限!");
             }
         }
@@ -381,7 +394,7 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
                 String filterRuleCondition = "";
                 FilterContext context = SystemContextHolder.getSessionContext();
                 if(context!=null){
-                    filterRuleCondition = join(context.getFilterRuleJpqlList(getEntityClass(), dataFilterType)," or ");
+                    filterRuleCondition = join(context.getFilterRuleJpqlList(getEntityClass(), dataFilterType , orgId)," or ");
                 }
 
                 //如果 规则条件返回 null 或者 "" 则 组装 为 (1=1) 否则 (fs=?1 or fs=?2 or fs=?3)

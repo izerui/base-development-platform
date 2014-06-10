@@ -38,6 +38,11 @@ public interface BaseService<T extends BaseModel>{
      * @return
      */
     BaseService<T> queryOrgId(String orgId);
+    /**
+     * 附加用户的当前单位查询条件 对于 Specification 查询模型方法无效
+     * @return
+     */
+    BaseService<T> queryOrgId();
 
     /**
      * 附加未删除标志查询条件 对于 Specification 查询模型方法无效
