@@ -68,7 +68,17 @@ public class SessionVariable implements FilterContext{
         relationIds.addAll(getPostContext().getPostIds());//添加岗位ids
         relationIds.addAll(getGroupContext().getGroupIds());//添加群组ids
         //获取用户具有的所有规则权限list
-        filterRuleList = SpringContextHolder.getBean(FilterRuleService.class).queryUnDeleted().findAll("x.state = 1 and x.relationId in ?1",relationIds);
+        filterRuleList = SpringContextHolder.getBean(FilterRuleService.class).queryUnDeleted().findAll("x.state = 1 and ( "+applyRelationIds(relationIds)+" )");
+    }
+
+    private String applyRelationIds(List<String> relationIds){
+        Collection<String> newRelationIds = Collections2.transform(relationIds,new Function<String, String>() {
+            @Override
+            public String apply(String input) {
+                return "x.relationId = '"+input+"'";
+            }
+        });
+        return StringUtils.join(newRelationIds," or ");
     }
 
     /**
@@ -170,7 +180,7 @@ public class SessionVariable implements FilterContext{
                 return null;
             }
         });
-        return Collections2.filter(result,Predicates.notNull());
+        return Collections2.filter(result, Predicates.notNull());
     }
 
 
