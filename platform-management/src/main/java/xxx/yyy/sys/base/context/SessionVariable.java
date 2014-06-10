@@ -192,17 +192,17 @@ public class SessionVariable implements FilterContext{
      */
     public Map<String,Object> getFilterParameters(){
         Map<String,Object> filterParameters = Maps.newHashMap();
-        filterParameters.put("userId", getUser().getId());
-        filterParameters.put("userOrgId", getOrgContext().getOrgId());
-        filterParameters.put("userParantDeptIds", getDepartmentContext().getContainsParentIds());
-        filterParameters.put("userDeptIds", getDepartmentContext().getContainsParentIds());
-        filterParameters.put("userGroupIds", getGroupContext().getGroupIds());
-        filterParameters.put("userDefaultDeptId", getDepartmentContext().getDefaultDeptId());
-        filterParameters.put("userChildDeptIds", getDepartmentContext().getChildDepartmentIds());
-        filterParameters.put("userChildOrgIds", getOrgContext().getChildOrgIds());
-        filterParameters.put("userSecretLevel",getUser().getSecretLevel());
-        filterParameters.put("dateNow",new DateTime().toDate());
-        filterParameters.put("dateYear",new DateTime().getYear());
+        filterParameters.put(USER_ID, getUser().getId());
+        filterParameters.put(USER_ORG_ID, getOrgContext().getOrgId());
+        filterParameters.put(USER_PARENT_DEPT_IDS, getDepartmentContext().getContainsParentIds());
+        filterParameters.put(USER_DEPT_IDS, getDepartmentContext().getContainsParentIds());
+        filterParameters.put(USER_GROUP_IDS, getGroupContext().getGroupIds());
+        filterParameters.put(USER_DEFAULT_DEPT_ID, getDepartmentContext().getDefaultDeptId());
+        filterParameters.put(USER_CHILD_DEPT_IDS, getDepartmentContext().getChildDepartmentIds());
+        filterParameters.put(USER_CHILD_ORG_IDS, getOrgContext().getChildOrgIds());
+        filterParameters.put(USER_SECRET_LEVEL,getUser().getSecretLevel());
+        filterParameters.put(DATE_NOW,new DateTime().toDate());
+        filterParameters.put(DATE_YEAR,new DateTime().getYear());
         return filterParameters;
     }
 

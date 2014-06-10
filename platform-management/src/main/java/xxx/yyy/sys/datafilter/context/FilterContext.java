@@ -9,6 +9,51 @@ import java.util.Map;
 public interface FilterContext {
 
     /**
+     * 登录用户id
+     */
+    String USER_ID = "userId";
+    /**
+     * 用户的单位ID
+     */
+    String USER_ORG_ID = "userOrgId";
+    /**
+     * 当前单位和上级单位的id集合
+     */
+    String USER_PARENT_DEPT_IDS = "userParentDeptIds";
+    /**
+     * 用户所属部门的id集合
+     */
+    String USER_DEPT_IDS = "userDeptIds";
+    /**
+     * 用户所属群组id集合
+     */
+    String USER_GROUP_IDS = "userGroupIds";
+    /**
+     * 用户默认部门id
+     */
+    String USER_DEFAULT_DEPT_ID = "userDefaultDeptId";
+    /**
+     * 用户所属部门和子部门的id集合
+     */
+    String USER_CHILD_DEPT_IDS = "userChildDeptIds";
+    /**
+     * 用户所属单位和子单位的id集合
+     */
+    String USER_CHILD_ORG_IDS = "userChildOrgIds";
+    /**
+     * 用户的密级级别 数值越高密级越大
+     */
+    String USER_SECRET_LEVEL = "userSecretLevel";
+    /**
+     * 当前时间
+     */
+    String DATE_NOW = "dateNow";
+    /**
+     * 当前年
+     */
+    String DATE_YEAR = "dateYear";
+
+    /**
      * 获取用户具有的规则权限的jpql 列表
      *
      * @param modelClass     操作的entityClass
