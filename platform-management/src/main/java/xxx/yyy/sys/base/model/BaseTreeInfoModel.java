@@ -63,7 +63,7 @@ public abstract class BaseTreeInfoModel extends BaseInfoModel implements Treeabl
     }
 
     /**
-     * 获取资源类型
+     * 获取类型
      *
      * @return String
      */
@@ -72,11 +72,10 @@ public abstract class BaseTreeInfoModel extends BaseInfoModel implements Treeabl
     }
 
     /**
-     * 设置资源类型
+     * 设置类型
      *
      * @param type
      *            类型
-     * @see xxx.yyy.framework.common.enumeration.ResourceType
      */
     public void setType(String type) {
         this.type = type;
