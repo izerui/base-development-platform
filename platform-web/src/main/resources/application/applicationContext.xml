@@ -54,6 +54,7 @@
 
     <!-- spring对ehcache的缓存管理 -->
     <bean id="ehCacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+        <property name="transactionAware" value="true"/>
         <property name="cacheManager" ref="ehCacheManagerFactory"></property>
     </bean>
 
