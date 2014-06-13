@@ -25,7 +25,6 @@ import org.springframework.util.Assert;
 import xxx.yyy.framework.common.utilities.CollectionUtils;
 import xxx.yyy.sys.base.context.SessionVariable;
 import xxx.yyy.sys.rbac.model.Resource;
-import xxx.yyy.sys.rbac.model.Role;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,42 +107,11 @@ public abstract class AuthorizationRealm extends AuthorizingRealm {
 		// 添加用户拥有的permission
 		addPermissions(info, model.getResourceContext().getResourceList());
 		// 添加用户拥有的role
-		addRoles(info, model.getRoleContext().getRolesList());
+        info.addRoles(model.getRoleContext().getRoleNames());
 
 		return info;
 	}
 
-	/**
-	 * 通过组集合，将集合中的role字段内容解析后添加到SimpleAuthorizationInfo授权信息中
-	 *
-	 * @param info
-	 *            SimpleAuthorizationInfo
-	 * @param groupsList
-	 *            组集合
-	 */
-	private void addRoles(SimpleAuthorizationInfo info, List<Role> groupsList) {
-
-
-		/*
-		// 解析当前用户组中的role
-		List<String> temp = CollectionUtils.extractToList(groupsList, "role",
-				true);
-
-		List<String> roles = getValue(temp, "roles\\[(.*?)\\]");
-	*/
-
-
-		List<String> roles =CollectionUtils.extractToList(groupsList, "name",true);
-
-		// 添加默认的roles到roels
-		if (CollectionUtils.isNotEmpty(defaultRole)) {
-			CollectionUtils.addAll(roles, defaultRole.iterator());
-		}
-
-		// 将当前用户拥有的roles设置到SimpleAuthorizationInfo中
-		info.addRoles(roles);
-
-	}
 
 	/**
 	 * 通过资源集合，将集合中的permission字段内容解析后添加到SimpleAuthorizationInfo授权信息中

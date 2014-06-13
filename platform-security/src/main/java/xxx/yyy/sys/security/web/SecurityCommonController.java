@@ -16,6 +16,7 @@
 package xxx.yyy.sys.security.web;
 
 import com.google.code.kaptcha.Producer;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import xxx.yyy.sys.security.filter.CaptchaAuthenticationFilter;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -62,8 +64,12 @@ public class SecurityCommonController {
 
 
     @RequestMapping("/login")
-    public String login(){
+    public String login(HttpServletRequest request){
+        if (SecurityUtils.getSubject().isAuthenticated()) {
+            return "home";
+        }
         return "login";
     }
+
 
 }

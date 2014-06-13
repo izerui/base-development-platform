@@ -16,14 +16,12 @@
 package xxx.yyy.sys.base.context;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import xxx.yyy.framework.common.application.SpringContextHolder;
 import xxx.yyy.sys.rbac.model.Post;
 import xxx.yyy.sys.rbac.model.User;
-import xxx.yyy.sys.rbac.service.PostService;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * 岗位上下文
@@ -32,7 +30,7 @@ import java.util.List;
 public class PostContext extends AbstractUserContext{
 
 
-    private List<Post> postList;
+    private Collection<Post> postList;
 
 
     public PostContext(User user) {
@@ -41,7 +39,12 @@ public class PostContext extends AbstractUserContext{
 
     @Override
     protected void init() {
-        postList = SpringContextHolder.getBean(PostService.class).getUserPosts(getUser().getId());
+        postList = Collections2.filter(getUser().getPosts(),new Predicate<Post>() {
+            @Override
+            public boolean apply(Post input) {
+                return !input.isDeleteStatus();
+            }
+        });
     }
 
     /**
@@ -63,7 +66,7 @@ public class PostContext extends AbstractUserContext{
      *
      * @return
      */
-    public List<Post> getPostList() {
+    public Collection<Post> getPostList() {
         return postList;
     }
 }

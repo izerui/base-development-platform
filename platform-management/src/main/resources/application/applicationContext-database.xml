@@ -9,52 +9,45 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
 		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
-	<bean id="realDataSource" class="org.apache.tomcat.jdbc.pool.DataSource"
-		destroy-method="close">
-		<property name="poolProperties">
-			<bean class="org.apache.tomcat.jdbc.pool.PoolProperties">
-				<property name="driverClassName" value="${database.driverClassName}" />
-				<property name="url" value="${database.url}" />
-				<property name="username" value="${database.username}" />
-				<property name="password" value="${database.password}" />
-				<!-- 指明是否在从池中取出连接前进行检验, 如果检验失败, 则从池中去除连接并尝试取出另一个. -->
-				<property name="testOnBorrow" value="true" />
-				<!-- 指明是否在归还到池中前进行检验  -->
-				<property name="testOnReturn" value="true" />
-				<!-- 连接是否被空闲连接回收器( 如果有) 进行检验,如果检测失败, 则连接将被从池中去除. -->
-				<property name="testWhileIdle" value="true" />
-				<!-- 在空闲连接回收器线程运行期间休眠的时间值, 以毫秒为单位. 如果设置为非正数, 则不运行空闲连接回收器线程 -->
-				<property name="timeBetweenEvictionRunsMillis" value="1800000" />
-				<!-- 在每次空闲连接回收器线程( 如果有) 运行时检查的连接数量 -->
-				<property name="numTestsPerEvictionRun" value="3" />
-				<!-- 连接在池中保持空闲而不被空闲连接回收器线程( 如果有) 回收的最小时间值，单位毫秒 -->
-				<property name="minEvictableIdleTimeMillis" value="1800000" />
-				<!-- 连接池创建的连接的默认的auto-commit 状态 -->
-				<property name="defaultAutoCommit" value="false" />
-				<!-- 避免过度验证，保证验证不超过这个频率——以毫秒为单位 -->
-				<property name="validationInterval" value="30000" />
-				<!-- SQL 查询, 用来验证从连接池取出的连接 -->
-				<property name="validationQuery" value="SELECT 1" />
-				<!-- 最大活动连接 -->
-				<property name="maxActive" value="100" />
-				<!-- 连接池启动时创建的初始化连接数量 -->
-				<property name="initialSize" value="10" />
-				<!-- 最大等待时间 -->
-				<property name="maxWait" value="10000" />
-				<!-- 最小空闲连接 -->
-				<property name="minIdle" value="10" />
-				<!-- 标记当Statement 或连接被泄露时是否打印程序的stack traces 日志 -->
-				<property name="logAbandoned" value="false" />
-				<!-- 标记是否删除泄露的连接, 如果他们超过了removeAbandonedTimout 的限制. -->
-				<property name="removeAbandoned" value="true" />
-				<!-- 泄露的连接可以被删除的超时值, 单位秒 -->
-				<property name="removeAbandonedTimeout" value="60" />
-				<!-- 拦截器 -->
-				<property name="jdbcInterceptors"
-					value="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer" />
-			</bean>
-		</property>
-	</bean>
+
+    <bean id="realDataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        <property name="driverClassName" value="${database.driverClassName}" />
+        <property name="url" value="${database.url}" />
+        <property name="username" value="${database.username}" />
+        <property name="password" value="${database.password}" />
+        <!-- 指明是否在从池中取出连接前进行检验, 如果检验失败, 则从池中去除连接并尝试取出另一个. -->
+        <property name="testOnBorrow" value="true" />
+        <!-- 指明是否在归还到池中前进行检验  -->
+        <property name="testOnReturn" value="true" />
+        <!-- 连接是否被空闲连接回收器( 如果有) 进行检验,如果检测失败, 则连接将被从池中去除. -->
+        <property name="testWhileIdle" value="true" />
+        <!-- 在空闲连接回收器线程运行期间休眠的时间值, 以毫秒为单位. 如果设置为非正数, 则不运行空闲连接回收器线程 -->
+        <property name="timeBetweenEvictionRunsMillis" value="1800000" />
+        <!-- 在每次空闲连接回收器线程( 如果有) 运行时检查的连接数量 -->
+        <property name="numTestsPerEvictionRun" value="3" />
+        <!-- 连接在池中保持空闲而不被空闲连接回收器线程( 如果有) 回收的最小时间值，单位毫秒 -->
+        <property name="minEvictableIdleTimeMillis" value="1800000" />
+        <!-- 连接池创建的连接的默认的auto-commit 状态 -->
+        <property name="defaultAutoCommit" value="false" />
+        <!-- SQL 查询, 用来验证从连接池取出的连接 -->
+        <property name="validationQuery" value="SELECT 1" />
+        <!-- 最大活动连接 -->
+        <property name="maxActive" value="100" />
+        <!-- 连接池启动时创建的初始化连接数量 -->
+        <property name="initialSize" value="10" />
+        <!-- 最大等待时间 -->
+        <property name="maxWait" value="10000" />
+        <!-- 最小空闲连接 -->
+        <property name="minIdle" value="10" />
+        <!-- 标记当Statement 或连接被泄露时是否打印程序的stack traces 日志 -->
+        <property name="logAbandoned" value="false" />
+        <!-- 标记是否删除泄露的连接, 如果他们超过了removeAbandonedTimout 的限制. -->
+        <property name="removeAbandoned" value="true" />
+        <!-- 泄露的连接可以被删除的超时值, 单位秒 -->
+        <property name="removeAbandonedTimeout" value="60" />
+        <property name="filters" value="stat" />
+    </bean>
+
 
 	<bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
 		<constructor-arg name="realDataSource" ref="realDataSource" />

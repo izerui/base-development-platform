@@ -5,10 +5,8 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import xxx.yyy.framework.common.application.SpringContextHolder;
 import xxx.yyy.sys.rbac.model.Department;
 import xxx.yyy.sys.rbac.model.User;
-import xxx.yyy.sys.rbac.service.AccountService;
 
 import java.util.Collection;
 import java.util.List;
@@ -24,7 +22,7 @@ public abstract class AbstractDeptTriangleContext extends AbstractUserContext{
 
     @Override
     protected void init() {
-        departmentList = SpringContextHolder.getBean(AccountService.class).getOne(getUser().getId()).getDeptList();
+        departmentList = getUser().getDeptList();
     }
 
 

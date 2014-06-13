@@ -16,6 +16,7 @@
 package xxx.yyy.sys.base.context;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import xxx.yyy.framework.common.application.SpringContextHolder;
@@ -84,6 +85,20 @@ public class RoleContext extends AbstractUserContext{
                 return input.getId();
             }
         });
+    }
+    /**
+     * 获取角色名称列表
+     *
+     * @return
+     */
+    public Collection<String> getRoleNames() {
+        Collection<String> roleNames = Collections2.transform(roleList,new Function<Role, String>() {
+            @Override
+            public String apply(Role input) {
+                return input.getName();
+            }
+        });
+        return Collections2.filter(roleNames, Predicates.notNull());
     }
 
     /**

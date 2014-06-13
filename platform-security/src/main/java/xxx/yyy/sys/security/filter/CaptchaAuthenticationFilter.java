@@ -24,6 +24,7 @@ import org.apache.shiro.web.servlet.ShiroHttpServletRequest;
 import org.apache.shiro.web.util.WebUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import xxx.yyy.sys.base.context.SystemContextHolder;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -133,6 +134,9 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter {
 	protected boolean onLoginSuccess(AuthenticationToken token, Subject subject, ServletRequest request,
 			ServletResponse response) throws Exception {
 		Session session = subject.getSession(false);
+
+        //for druid
+        session.setAttribute("userInfo",SystemContextHolder.getSessionContext().getUser().getName());
 
 		session.removeAttribute(SESSION_LOGINNUM_KEY);
 		session.removeAttribute(SESSION_SHOWCAPTCHA_KEY);

@@ -70,8 +70,8 @@ public class ChainDefinitionSectionMetaSource implements
 		// 循环数据库角色的url
 		for (Role role : accountService.getRoles()) {
 			if (StringUtils.isNotEmpty(role.getValue())
-					&& StringUtils.isNotEmpty(role.getRole())) {
-				section.put(role.getValue(), role.getRole());
+					&& StringUtils.isNotEmpty(role.getName())) {
+				section.put(role.getValue(), "roles["+role.getName()+"]");
 			}
 		}
 

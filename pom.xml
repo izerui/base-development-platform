@@ -465,6 +465,13 @@
             <artifactId>pinyin4j</artifactId>
             <version>${pinyin4j.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.0.6</version>
+        </dependency>
+
         <!-- ==activiti begin
         <dependency>
             <groupId>org.activiti</groupId>

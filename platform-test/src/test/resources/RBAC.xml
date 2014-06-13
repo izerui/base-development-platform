@@ -15,11 +15,11 @@
                    SORT="0" VERSION="0" NAME="校长" STATE="1"/>
     <!-- 角色 -->
   <SYS_RBAC_ROLE ID="4a1196ddfaa5e649aecd83833aaa4dba" DELETE_STATUS="0" ORG_ID="8b555c806edd2b848c7c8fa3e5e70761" SORT="0"
-                   VERSION="0" NAME="东方不败" STATE="1" ROLE="system" VALUE="/system/**"/>
+                   VERSION="0" NAME="东方不败" STATE="1" VALUE="/home/**"/>
 
     <!-- 资源 -->
   <SYS_RBAC_RESOURCE ID="c0c55587b5f64143ae4a3839124ff71e" DELETE_STATUS="0" ORG_ID="8b555c806edd2b848c7c8fa3e5e70761" SORT="0" VERSION="0"
-                     NAME="管理后台" STATE="1" PERMISSION="perms[sytem]" TYPE="01" URL="/system" VALUE="/system/**"/>
+                     NAME="管理后台" STATE="1" PERMISSION="perms[system]" TYPE="01" URL="/system" VALUE="/system/**"/>
 
     <SYS_RBAC_USER_DEPT SYS_RBAC_USER_ID="admin"  	SYS_RBAC_DEPT_ID="178aa764bf10459cdbaac1d4a5d900e9"/>
     <SYS_RBAC_ROLE_USER SYS_RBAC_USER_ID="admin"  	SYS_RBAC_ROLE_ID="4a1196ddfaa5e649aecd83833aaa4dba"/>

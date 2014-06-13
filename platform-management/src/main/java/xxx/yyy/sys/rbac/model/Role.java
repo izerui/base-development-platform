@@ -44,15 +44,11 @@ public class Role extends BaseInfoModel {
     @JoinTable(name = "SYS_RBAC_ROLE_RESOURCE", joinColumns = { @JoinColumn(name = "SYS_RBAC_ROLE_ID") }, inverseJoinColumns = { @JoinColumn(name = "SYS_RBAC_RESOURCE_ID") })
 	private List<Resource> resources = new ArrayList<Resource>();
 
-	//shiro role 字符串
-    @Column(name="ROLE",length=64)
-	private String role;
-
 	//shiro role连定义的值
     @Column(name="VALUE",length=256)
 	private String value;
-	
- 
+
+
 
 	/**
 	 * 获取角色成员
@@ -106,22 +102,6 @@ public class Role extends BaseInfoModel {
 	}
 
 	
-	/**
-	 * 获取shiro role字符串
-	 * @return String
-	 */
-	public String getRole() {
-		return role;
-	}
-
-	/**
-	 * 设置shiro role字符串
-	 * @param role 字符串
-	 */
-	public void setRole(String role) {
-		this.role = role;
-	}
-
 	/**
 	 * 获取shiro role连定义的值
 	 * @return String
