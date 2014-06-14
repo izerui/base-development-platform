@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
+    <SYS_FILTER_RULE/>
     <SYS_RBAC_USER/>
     <SYS_RBAC_DEPARTMENT/>
     <SYS_RBAC_POST />

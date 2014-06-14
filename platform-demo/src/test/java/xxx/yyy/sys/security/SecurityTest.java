@@ -45,17 +45,6 @@ public class SecurityTest extends BaseTest {
 
     }
 
-    @Test
-    public void addAdmin(){
-        User user = new User();
-        user.setId("admin");
-        user.setName("admin");
-        user.setPassword("21232f297a57a5a743894a0e4a801fc3");
-        user.setEmail("ddjdjj");
-        accountService.save(user);
-    }
-
-
 
     @Test
     public void testInsert(){
@@ -72,24 +61,4 @@ public class SecurityTest extends BaseTest {
         accountService.save(Lists.newArrayList(user,user2));
     }
 
-    @Test
-    @DatabaseSetup("classpath:RBAC.xml")
-    public void testCommand(){
-        accountService.executeCommand(new Command() {
-            @Override
-            public Object execute(EntityManager entityManager) {
-                Query query = entityManager.createQuery("select u from User u");
-                List resultList = query.getResultList();
-                assertThat(resultList).have(new Condition() {
-                    @Override
-                    public boolean matches(Object value) {
-                        User user = (User) value;
-                        return user.getId().equals("admin");
-                    }
-                });
-                log.info("测试数据 ：{}",resultList.toString());
-                return null;
-            }
-        });
-    }
 }
