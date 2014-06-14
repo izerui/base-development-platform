@@ -52,7 +52,7 @@ import static org.mockito.Mockito.when;
 @TestExecutionListeners({
         DirtiesContextTestExecutionListener.class,
         DbUnitTestExecutionListener.class })
-@DatabaseSetup(value = "classpath:DELETE_ALL.xml",type = DatabaseOperation.DELETE_ALL)
+@DatabaseSetup({"classpath:DELETE_ALL.xml","classpath:RBAC.xml"})
 public abstract class BaseTest extends AbstractTransactionalJUnit4SpringContextTests {
 	protected Logger log = LoggerFactory.getLogger(getClass());
 

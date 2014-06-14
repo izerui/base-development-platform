@@ -57,14 +57,14 @@ public class TestTableTest extends BaseTest {
     }
 
     @Test
-    @DatabaseSetup({"classpath:TEST_TABLE.xml","classpath:RBAC.xml"})
+    @DatabaseSetup({"classpath:TEST_TABLE.xml"})
     public void list(){
         assertThat(testTableService.queryUnDeleted().findAll("id in ?1 ", Lists.newArrayList("1","2","3","4"))).hasSize(4);
         assertThat(testTableService.queryUnDeleted().dataFilter(DataFilterType.READ).findAll("id in ?1",Lists.newArrayList("1","2","3","4"))).hasSize(3);
     }
 
     @Test
-    @DatabaseSetup({"classpath:TEST_TABLE.xml","classpath:RBAC.xml"})
+    @DatabaseSetup({"classpath:TEST_TABLE.xml"})
     public void testCreate(){
         TestTable t  = new TestTable();
         t.setIid(2);
