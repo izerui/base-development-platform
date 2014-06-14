@@ -55,6 +55,7 @@
                         <exclude>**/README</exclude>
                         <exclude>**.txt</exclude>
                         <exclude>**.iml</exclude>
+                        <exclude>**.xml</exclude>
                         <exclude>src/test/resources/**</exclude>
                         <exclude>src/main/resources/**</exclude>
                     </excludes>
@@ -67,28 +68,22 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- 分析项目依赖 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${license-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>install</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>sources</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 		</plugins>
-
-        <pluginManagement>
-            <plugins>
-                <!-- 分析项目依赖 -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-dependency-plugin</artifactId>
-                    <version>${license-maven-plugin.version}</version>
-                    <executions>
-                        <execution>
-                            <id>install</id>
-                            <phase>install</phase>
-                            <goals>
-                                <goal>sources</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-            </plugins>
-
-        </pluginManagement>
 	</build>
 
     <repositories>
