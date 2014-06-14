@@ -29,7 +29,7 @@ public class CmdTest extends BaseTest {
             @Override
             public Object execute(EntityManager entityManager) {
                 Query query = entityManager.createQuery("select u from User u");
-                List resultList = query.getResultList();
+                List<User> resultList = query.getResultList();
                 assertThat(resultList).have(new Condition() {
                     @Override
                     public boolean matches(Object value) {
