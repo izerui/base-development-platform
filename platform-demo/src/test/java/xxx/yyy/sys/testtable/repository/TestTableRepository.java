@@ -13,13 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xxx.yyy.sys.test.service;
+package xxx.yyy.sys.testtable.repository;
 
-import xxx.yyy.sys.base.service.BaseService;
-import xxx.yyy.sys.test.model.TestTable;
+import org.springframework.stereotype.Repository;
+import xxx.yyy.sys.base.jpa.PlatformJpaRepository;
+import xxx.yyy.sys.testtable.model.TestTable;
+
+import java.util.List;
 
 /**
- * Created by serv on 2014/6/5.
+ * Created by serv on 14-5-30.
  */
-public interface TestTableService extends BaseService<TestTable> {
+@Repository
+public interface TestTableRepository extends PlatformJpaRepository<TestTable>{
+
+    public List<TestTable> findByIid(Integer id);
 }

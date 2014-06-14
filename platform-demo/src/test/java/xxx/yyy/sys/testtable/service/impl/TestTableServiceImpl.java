@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xxx.yyy.sys.test.service.impl;
+package xxx.yyy.sys.testtable.service.impl;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import xxx.yyy.sys.base.service.BaseServiceImpl;
-import xxx.yyy.sys.test.model.TestTable;
-import xxx.yyy.sys.test.service.TestTableService;
+import xxx.yyy.sys.testtable.model.TestTable;
+import xxx.yyy.sys.testtable.service.TestTableService;
 
 /**
  * Created by serv on 2014/6/5.

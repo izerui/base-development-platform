@@ -13,19 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xxx.yyy.sys.test.repository;
+package xxx.yyy.sys.testtable.model;
 
-import org.springframework.stereotype.Repository;
-import xxx.yyy.sys.base.jpa.PlatformJpaRepository;
-import xxx.yyy.sys.test.model.TestTable;
+import xxx.yyy.sys.base.model.BaseBusinessModel;
 
-import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * Created by serv on 14-5-30.
  */
-@Repository
-public interface TestTableRepository extends PlatformJpaRepository<TestTable>{
+@Entity
+@Table(name = "TEST_TABLE")
+public class TestTable extends BaseBusinessModel {
+    @Column(name = "iid",nullable = false)
+    private int iid;
+    @Column(name="name",length = 64,nullable = true)
+    private String name;
 
-    public List<TestTable> findByIid(Integer id);
+    public int getIid() {
+        return iid;
+    }
+
+    public void setIid(int iid) {
+        this.iid = iid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

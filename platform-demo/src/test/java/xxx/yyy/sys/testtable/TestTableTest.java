@@ -21,8 +21,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import xxx.yyy.sys.base.BaseTest;
 import xxx.yyy.sys.datafilter.DataFilterType;
-import xxx.yyy.sys.test.model.TestTable;
-import xxx.yyy.sys.test.service.TestTableService;
+import xxx.yyy.sys.testtable.model.TestTable;
+import xxx.yyy.sys.testtable.service.TestTableService;
 
 import java.io.IOException;
 

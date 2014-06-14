@@ -9,31 +9,16 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>platform-test</artifactId>
-
-    <packaging>pom</packaging>
-
-    <build>
-        <plugins>
-            <!-- test -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <includes>
-                        <include>**/*Test.java</include>
-                    </includes>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+    <artifactId>platform-web</artifactId>
+    <packaging>war</packaging>
 
     <dependencies>
         <dependency>
             <groupId>xxx.yyy</groupId>
-            <artifactId>platform-web</artifactId>
+            <artifactId>platform-security</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
+
     </dependencies>
 
 </project>
