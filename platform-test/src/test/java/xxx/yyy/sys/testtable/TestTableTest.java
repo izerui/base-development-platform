@@ -17,26 +17,15 @@ package xxx.yyy.sys.testtable;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.google.common.collect.Lists;
-import org.assertj.core.api.Assertions;
-import org.assertj.core.api.Condition;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.transaction.support.TransactionTemplate;
 import xxx.yyy.sys.base.BaseTest;
-import xxx.yyy.sys.base.jpa.cmd.Command;
 import xxx.yyy.sys.datafilter.DataFilterType;
-import xxx.yyy.sys.rbac.model.User;
 import xxx.yyy.sys.test.model.TestTable;
 import xxx.yyy.sys.test.service.TestTableService;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
