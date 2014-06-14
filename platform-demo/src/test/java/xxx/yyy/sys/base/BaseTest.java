@@ -15,7 +15,6 @@ package xxx.yyy.sys.base; /**
  */
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
@@ -28,10 +27,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import xxx.yyy.sys.base.context.SessionVariable;
 import xxx.yyy.sys.rbac.model.User;
 import xxx.yyy.sys.rbac.repository.UserRepository;
@@ -47,7 +44,7 @@ import static org.mockito.Mockito.when;
 @ContextConfiguration(locations={
         "classpath*:application/applicationContext.xml",
         "classpath*:application/applicationContext-database.xml",
-        "classpath*:application/*/*/applicationContext*.xml"})
+        "classpath*:application/*/applicationContext*.xml"})
 @TransactionConfiguration(defaultRollback = false)
 @TestExecutionListeners({
         DirtiesContextTestExecutionListener.class,
