@@ -13,10 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
 /**
@@ -27,10 +31,14 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
         "classpath*:application/applicationContext.xml",
         "classpath*:application/applicationContext-database.xml",
         "classpath*:application/*/applicationContext*.xml"})
+@TestExecutionListeners({
+        DirtiesContextTestExecutionListener.class,
+        DbUnitTestExecutionListener.class })
 @TransactionConfiguration(defaultRollback = false)
 public class JbpmTest {
 
     @Test
+    @DatabaseSetup({"DELETE_ALL.xml", "RBAC.xml","TEST_TABLE.xml"})
     public void testStart(){
         System.out.println("application init");
     }
