@@ -17,10 +17,8 @@ package xxx.yyy.sys.base.context;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import xxx.yyy.sys.rbac.model.User;
 
 /**
  * 系统变量工具类
@@ -31,8 +29,6 @@ import xxx.yyy.sys.rbac.model.User;
 public class SystemContextHolder {
 
     private final static Logger log = LoggerFactory.getLogger(SystemContextHolder.class);
-
-    private static ThreadLocal<User> userThreadLocal = new ThreadLocal<>();
 
     /**
      * 获取当前安全模型

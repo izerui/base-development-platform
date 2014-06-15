@@ -15,19 +15,12 @@
  */
 package xxx.yyy.sys.security;
 
-import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.google.common.collect.Lists;
-import org.assertj.core.api.Condition;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import xxx.yyy.sys.base.BaseTest;
-import xxx.yyy.sys.base.jpa.cmd.Command;
 import xxx.yyy.sys.rbac.model.User;
 import xxx.yyy.sys.rbac.service.AccountService;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

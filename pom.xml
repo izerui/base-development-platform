@@ -12,7 +12,8 @@
         <module>platform-framework</module>
         <module>platform-management</module>
         <module>platform-security</module>
-        <module>platform-demo</module>
+        <module>platform-test/web-example</module>
+        <module>platform-test/jbpm4.4-integration</module>
     </modules>
 
 	<build>
@@ -85,24 +86,25 @@
 		</plugins>
 	</build>
 
+
     <repositories>
         <repository>
             <id>repo.spring.io</id>
             <name>repo.spring.io-releases</name>
             <url>http://repo.spring.io/repo1</url>
         </repository>
-		<repository>
-			<id>nexus</id>
-			<name>local private nexus</name>
-			<url>http://maven.oschina.net/content/groups/public/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
+        <repository>
+            <id>nexus</id>
+            <name>local private nexus</name>
+            <url>http://maven.oschina.net/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <dependencies>
         <!-- guava -->
@@ -317,6 +319,16 @@
         <!-- Spring Framework -->
         <dependency>
             <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${org.springframework-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${org.springframework-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
             <version>${org.springframework-version}</version>
         </dependency>
@@ -345,6 +357,11 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
+            <version>${org.springframework-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
             <version>${org.springframework-version}</version>
         </dependency>
 
@@ -428,17 +445,6 @@
             <artifactId>flyway-core</artifactId>
             <version>${com.googlecode.flyway.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.github.springtestdbunit</groupId>
-            <artifactId>spring-test-dbunit</artifactId>
-            <version>1.1.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.dbunit</groupId>
-            <artifactId>dbunit</artifactId>
-            <version>2.5.0</version>
-        </dependency>
 
 
         <!-- flyway end -->
@@ -509,19 +515,49 @@
         </dependency>
 
 
+
+        <!-- dbunit -->
+        <dependency>
+            <groupId>org.dbunit</groupId>
+            <artifactId>dbunit</artifactId>
+            <version>2.5.0</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Spring Test -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${org.springframework-version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <version>${assertj-core.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <version>${org.mockito.version}</version>
+            <scope>test</scope>
         </dependency>
-    </dependencies>
+        <dependency>
+            <groupId>com.github.springtestdbunit</groupId>
+            <artifactId>spring-test-dbunit</artifactId>
+            <version>1.1.0</version>
+            <scope>test</scope>
+        </dependency>
 
+
+    </dependencies>
 
     <properties>
         <!-- Google -->
@@ -544,6 +580,7 @@
         <org.aspectj-version>1.7.3</org.aspectj-version>
         <!-- JPA -->
         <javax.persistence.version>1.0.0.Final</javax.persistence.version>
+        <!-- jbpm4 support -->
         <org.hibernate.version>4.3.5.Final</org.hibernate.version>
         <!-- BeanValidation -->
         <hibernate-validator.version>5.1.1.Final</hibernate-validator.version>
@@ -583,5 +620,6 @@
         <java-version>1.7</java-version>
 
     </properties>
+
 
 </project>

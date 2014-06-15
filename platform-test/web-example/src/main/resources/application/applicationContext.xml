@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:cache="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
+
+    <!-- 定义aop Aspect自动代理 -->
+    <aop:aspectj-autoproxy proxy-target-class="true" />
+
+    <context:property-placeholder
+            ignore-unresolvable="true"
+            location="classpath*:application/*.properties,classpath*:application/*/*.properties" />
+
+    <context:component-scan base-package="xxx.yyy">
+        <context:include-filter type="annotation" expression="org.aspectj.lang.annotation.Aspect" />
+        <context:include-filter type="annotation" expression="xxx.yyy.framework.common.annotation.BeanComponent" />
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+    </context:component-scan>
+
+    <bean id="messageSource"
+          class="xxx.yyy.framework.common.application.message.MultipleMessageSource">
+        <property name="basenames">
+            <list>
+                <value>classpath:application/*/*/messages</value>
+                <value>classpath:org/hibernate/validator/ValidationMessages</value>
+            </list>
+        </property>
+    </bean>
+
+
+
+
+    <bean id="localeResolver"
+          class="xxx.yyy.framework.common.application.i18n.SessionLocaleResolver">
+        <property name="defaultLocale" value="${defaultLocale}" />
+    </bean>
+
+
+    <!-- 使用缓存annotation 配置 -->
+    <!-- 具体使用 @see https://gist.github.com/izerui/8349323 -->
+    <cache:annotation-driven cache-manager="ehCacheManager" />
+
+    <!-- spring对ehcache的缓存工厂支持 -->
+    <bean id="ehCacheManagerFactory"
+          class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+        <property name="configLocation" value="classpath:${ehcache.configFile}" />
+        <property name="shared" value="false" />
+    </bean>
+
+    <!-- spring对ehcache的缓存管理 -->
+    <bean id="ehCacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+        <property name="transactionAware" value="true"/>
+        <property name="cacheManager" ref="ehCacheManagerFactory"></property>
+    </bean>
+
+    <bean  id="springContextHolder"  class="xxx.yyy.framework.common.application.SpringContextHolder" lazy-init="false"/>
+
+
+</beans>

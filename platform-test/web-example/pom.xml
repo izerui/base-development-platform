@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>platform-demo</artifactId>
+    <artifactId>web-example</artifactId>
     <packaging>war</packaging>
 
     <dependencies>
