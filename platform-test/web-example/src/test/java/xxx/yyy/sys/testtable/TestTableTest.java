@@ -63,11 +63,6 @@ public class TestTableTest extends BaseTest {
     }
 
 
-    @Test
-    public void testFFF(){
-        System.out.println("ff");
-    }
-
 
 
 }

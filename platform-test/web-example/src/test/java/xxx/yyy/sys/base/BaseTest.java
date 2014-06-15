@@ -42,8 +42,7 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={
-        "classpath*:application/applicationContext.xml",
-        "classpath*:application/applicationContext-database.xml",
+        "classpath*:application/applicationContext*.xml",
         "classpath*:application/*/applicationContext*.xml"})
 @TransactionConfiguration(defaultRollback = false)
 @TestExecutionListeners({

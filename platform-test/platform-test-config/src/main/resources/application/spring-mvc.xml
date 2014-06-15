@@ -36,7 +36,7 @@
 
     <context:property-placeholder
             ignore-unresolvable="true"
-            location="classpath*:application/application.properties,classpath*:application/*/*/application.properties" />
+            location="classpath*:application/*.properties,classpath*:application/*/*.properties" />
 
 
     <context:component-scan base-package="xxx.yyy">

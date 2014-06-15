@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<process name="order" xmlns="http://jbpm.org/4.4/jpdl">
+    <start name="start1" g="16,81,48,48">
+        <transition name="start" to="request" g="-19,-19"/>
+    </start>
+    <task name="request" g="114,76,92,52" assignee="#{owner}" form="/order/request">
+        <transition name="request" to="approve" g="-22,-17"/>
+    </task>
+    <task name="approve" g="250,77,92,52" assignee="bulain" form="/order/approve">
+        <transition name="approve" to="end1" g="-21,-17"/>
+        <transition name="reject" to="request" g="231,51:-5,-18"/>
+    </task>
+    <end name="end1" g="394,79,48,48"/>
+</process>
