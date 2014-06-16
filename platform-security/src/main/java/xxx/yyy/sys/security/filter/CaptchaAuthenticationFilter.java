@@ -46,7 +46,7 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter {
 	// 保存是否显示验证码的 sessionAttribute key名称
 	public final static String SESSION_SHOWCAPTCHA_KEY = "sessionShowCaptcha";
 	// 允许登录次数，当登录次数大于该数值时，会在页面中显示验证码
-	private Integer allowLoginNum = 3;
+	private Integer allowLoginNum;
 
     //captcha input name ，用来获取用户输入的验证码
     private String captchaParamName  = "captchaParam";

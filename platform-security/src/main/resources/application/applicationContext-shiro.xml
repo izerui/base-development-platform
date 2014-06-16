@@ -46,7 +46,7 @@
 
     <bean id="captchaAuthenticationFilter" class="xxx.yyy.sys.security.filter.CaptchaAuthenticationFilter" depends-on="springContextHolder">
         <!-- 允许的登录出错次数，超出会显示验证码 -->
-        <property name="allowLoginNum" value="3"/>
+        <property name="allowLoginNum" value="${allowLoginNum}"/>
         <!-- captcha input name ，用来获取用户输入的验证码 -->
         <property name="captchaParamName" value="captcha"/>
         <!-- 记住我 参数名 -->
