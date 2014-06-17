@@ -47,10 +47,10 @@ import static org.apache.commons.lang3.StringUtils.*;
 public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepository<T,String> implements PlatformJpaRepository<T>{
 
     //默认忽略删除状态
-    private Boolean deleteStatus = null;
+    private ThreadLocal<Boolean> deleteStatusThread = new ThreadLocal<Boolean>();
     //过滤的操作类型 CREATE READ PRINGT DELETE UPDATE
-    private String dataFilterType = null;
-    private String orgId = null;
+    private ThreadLocal<String> dataFilterTypeThread = new ThreadLocal<String>();
+    private ThreadLocal<String> orgIdThread = new ThreadLocal<String>();
 
     private final EntityManager entityManager;
     private final JpaEntityInformation<T, ?> entityInformation;
@@ -64,31 +64,31 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
 
     @Override
     public PlatformJpaRepository<T> queryOrgId(String orgId) {
-        this.orgId = orgId;
+        this.orgIdThread.set(orgId);
         return this;
     }
 
     @Override
     public PlatformJpaRepository<T> queryOrgId() {
-        this.orgId = SystemContextHolder.getSessionContext().getOrgContext().getOrgId();
+        this.orgIdThread.set(SystemContextHolder.getSessionContext().getOrgContext().getOrgId());
         return this;
     }
 
     @Override
     public PlatformJpaRepository queryUnDeleted() {
-        deleteStatus = false;
+        deleteStatusThread.set(false);
         return this;
     }
 
     @Override
     public PlatformJpaRepository queryDeleted() {
-        deleteStatus = true;
+        deleteStatusThread.set(true);
         return this;
     }
 
     @Override
     public PlatformJpaRepository<T> dataFilter(String dataFilterType) {
-        this.dataFilterType = dataFilterType;
+        this.dataFilterTypeThread.set(dataFilterType);
         return this;
     }
 
@@ -183,7 +183,7 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
 
     @Override
     public void deleteAll() {
-        if(dataFilterType!=null&&super.count()!=count()){
+        if(dataFilterTypeThread.get()!=null&&super.count()!=count()){
             throw new PlatformException("包含没有权限删除的数据!");
         }
         super.deleteAll();
@@ -199,7 +199,7 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
 
     @Override
     public void deleteAllInBatch() {
-        if(dataFilterType!=null&&super.count()!=count()){
+        if(dataFilterTypeThread.get()!=null&&super.count()!=count()){
             throw new PlatformException("包含没有权限删除的数据!");
         }
         super.deleteAllInBatch();
@@ -260,7 +260,7 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
     }
 
     private <S extends T> void doFilter(Collection<S> entityList){
-        if(null!=dataFilterType){
+        if(null!= dataFilterTypeThread.get()){
             Collection<String> ids = Collections2.transform(entityList,new Function<S, String>() {
                 @Override
                 public String apply(S input) {
@@ -274,7 +274,7 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
     }
 
     private <S extends T> void doFilter(S entity){
-        if(null!=dataFilterType){
+        if(null!= dataFilterTypeThread.get()){
             if (count("id = ?1",entity.getId())==0) {
                 throw new PlatformException("没有权限!");
             }
@@ -374,20 +374,20 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
         private String applyCondition(){
             List<String> conditions = Lists.newArrayList();
             //添加删除状态条件
-            if(deleteStatus!=null)  {
+            if(deleteStatusThread.get()!=null)  {
                 conditions.add(ALIAS+".deleteStatus = :deleteStatus");
             }
             //添加机构条件
-            if(!isEmpty(orgId )) {
+            if(!isEmpty(orgIdThread.get() )) {
                 conditions.add(ALIAS+".orgId = :orgId");
             }
 
             //数据规则ql 以 or 连接
-            if(null!=dataFilterType){
+            if(null!= dataFilterTypeThread.get()){
                 String filterRuleCondition = "";
                 FilterContext context = SystemContextHolder.getSessionContext();
                 if(context!=null){
-                    filterRuleCondition = join(context.getFilterRuleJpqlList(getEntityClass(), dataFilterType , orgId)," or ");
+                    filterRuleCondition = join(context.getFilterRuleJpqlList(getEntityClass(), dataFilterTypeThread.get() , orgIdThread.get())," or ");
                 }
 
                 //如果 规则条件返回 null 或者 "" 则 组装 为 (1=1) 否则 (fs=?1 or fs=?2 or fs=?3)
@@ -411,14 +411,14 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
                 }
             }
 
-            if(deleteStatus!=null){
-                query.setParameter("deleteStatus", deleteStatus);
+            if(deleteStatusThread.get()!=null){
+                query.setParameter("deleteStatus", deleteStatusThread.get());
             }
-            if(!isEmpty(orgId)){
-                query.setParameter("orgId",orgId);
+            if(!isEmpty(orgIdThread.get())){
+                query.setParameter("orgId", orgIdThread.get());
             }
 
-            if(!isEmpty(dataFilterType)){
+            if(!isEmpty(dataFilterTypeThread.get())){
                 //添加数据过滤变量信息
                 FilterContext context = SystemContextHolder.getSessionContext();
                 if(context==null){
@@ -435,15 +435,8 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
 
             }
 
-            reset();
         }
 
-
-        void reset(){
-            orgId = null;
-            deleteStatus = null;
-            dataFilterType = null;
-        }
 
 
     }
