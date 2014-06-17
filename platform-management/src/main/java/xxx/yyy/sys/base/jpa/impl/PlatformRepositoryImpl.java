@@ -93,18 +93,11 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
     }
 
     @Override
-    public T findOne(String condition, Object... objects) {
+    public T findOne(String condition, Object... values) {
         if(isEmpty(condition)){
             throw new PlatformException("条件不能为空!");
         }
-        List<T> result = findAll(condition,objects);
-        if(result.size()==0){
-            return null;
-        }
-        if(result.size()>1){
-            throw new PlatformException("找到多个条件为:"+condition+"的条目,请检查数据是否重复!");
-        }
-        return (T) createQuery(condition, objects).getSingleResult();
+        return (T) createQuery(condition, values).getSingleResult();
     }
 
     @Override
