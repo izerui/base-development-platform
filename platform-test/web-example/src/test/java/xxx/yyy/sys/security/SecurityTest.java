@@ -22,8 +22,6 @@ import xxx.yyy.sys.base.BaseTest;
 import xxx.yyy.sys.rbac.model.User;
 import xxx.yyy.sys.rbac.service.AccountService;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * Created by serv on 2014/6/2.
  */
@@ -35,6 +33,7 @@ public class SecurityTest extends BaseTest {
     @Test
     public void testSelectService(){
         accountService.queryDeleted().findAll();
+        accountService.findAll();
 
     }
 

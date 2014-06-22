@@ -22,6 +22,7 @@ import org.springframework.data.repository.core.RepositoryMetadata;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
 import xxx.yyy.sys.base.jpa.PlatformJpaRepository;
 import xxx.yyy.sys.base.jpa.impl.PlatformRepositoryImpl;
+import xxx.yyy.sys.base.jpa.impl.ProxyHandler;
 
 import javax.persistence.EntityManager;
 import java.io.Serializable;
@@ -48,7 +49,9 @@ public class PlatformJpaRepositoryFactoryBean<T extends JpaRepository<S,ID>,S,ID
 
         protected Object getTargetRepository(RepositoryMetadata metadata) {
 
-            return new PlatformRepositoryImpl((Class<T>) metadata.getDomainType(), entityManager);
+            PlatformRepositoryImpl platformRepository = new PlatformRepositoryImpl((Class<T>) metadata.getDomainType(), entityManager);
+
+            return new ProxyHandler(platformRepository).getProxy();
         }
 
         protected Class<?> getRepositoryBaseClass(RepositoryMetadata metadata) {

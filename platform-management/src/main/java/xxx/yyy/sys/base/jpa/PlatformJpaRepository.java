@@ -127,5 +127,13 @@ public interface PlatformJpaRepository<T extends Idable> extends JpaRepository<T
      */
     <S> S executeCommand(Command command);
 
+    /**
+     * 清除附加的查询过滤条件 比如删除/单位/权限过滤等标识
+     * 不用显示调用,每次执行过滤的方法调用后,会自动清空附加的查询条件参数
+     * 比如附加的 删除状态 / 单位机构限制 / 权限过滤等
+     */
+    @Deprecated
+    public void clearParamAppended();
+
 
 }

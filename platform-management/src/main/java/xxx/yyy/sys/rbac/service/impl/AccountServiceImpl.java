@@ -45,7 +45,6 @@ public class AccountServiceImpl extends BaseServiceImpl<User> implements Account
 		return roleRepository.getUserRoles(userId);
 	}
 
-
 	public List<Role> getRoles() {
 		return roleRepository.queryUnDeleted().findAll();
 	}

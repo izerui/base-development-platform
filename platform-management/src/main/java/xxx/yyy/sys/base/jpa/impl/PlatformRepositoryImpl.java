@@ -62,6 +62,13 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
     }
 
 
+    public void clearParamAppended(){
+        deleteStatusThread.set(null);
+        dataFilterTypeThread.set(null);
+        orgIdThread.set(null);
+    }
+
+
     @Override
     public PlatformJpaRepository<T> queryOrgId(String orgId) {
         this.orgIdThread.set(orgId);
@@ -93,6 +100,7 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
     }
 
     @Override
+    @ClearParamAfterMethod
     public T findOne(String condition, Object... values) {
         if(isEmpty(condition)){
             throw new PlatformException("条件不能为空!");
@@ -101,16 +109,19 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
     }
 
     @Override
+    @ClearParamAfterMethod
     public List<T> findAll(String condition, Object... objects) {
         return createQuery(condition, objects).getResultList();
     }
 
     @Override
+    @ClearParamAfterMethod
     public List<T> findAll(String condition, Sort sort, Object... objects) {
         return createQuery(condition, sort, objects).getResultList();
     }
 
     @Override
+    @ClearParamAfterMethod
     public Page<T> findAll(String condition, Pageable pageable, Object... objects) {
 
         if(pageable==null){
@@ -129,43 +140,51 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
     }
 
     @Override
+    @ClearParamAfterMethod
     public Page<T> findAll(Pageable pageable) {
         return this.findAll("", pageable);
     }
 
     @Override
+    @ClearParamAfterMethod
     public List<T> findAll(Iterable<String> ids) {
         return this.findAll("x.id in ?1",ids);
     }
 
     @Override
+    @ClearParamAfterMethod
     public T findOne(String id) {
         return this.findOne("x.id = ?1", id);
     }
 
     @Override
+    @ClearParamAfterMethod
     public List<T> findAll(Sort sort) {
         return createQuery(null,sort,null).getResultList();
     }
 
     @Override
+    @ClearParamAfterMethod
     public List<T> findAll() {
         return createQuery(null,null).getResultList();
     }
 
 
     @Override
+    @ClearParamAfterMethod
     public long count() {
         return QueryUtils.executeCountQuery(createCountQuery(null, null));
     }
 
     @Override
+    @ClearParamAfterMethod
     public long count(String condition, Object... objects) {
         return QueryUtils.executeCountQuery(createCountQuery(condition, objects));
     }
 
 
     @Override
+    @ClearParamAfterMethod
     public void deleteByIds(Iterable<String> ids) {
         List<T> tlist = super.findAll(ids);
         doFilter(tlist);
@@ -173,6 +192,7 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
     }
 
     @Override
+    @ClearParamAfterMethod
     public void delete(String id) {
         Assert.notNull(id, "给定的ID不能为空!");
 
@@ -182,6 +202,7 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
     }
 
     @Override
+    @ClearParamAfterMethod
     public void deleteAll() {
         if(dataFilterTypeThread.get()!=null&&super.count()!=count()){
             throw new PlatformException("包含没有权限删除的数据!");
@@ -191,6 +212,7 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
 
 
     @Override
+    @ClearParamAfterMethod
     public T getOne(String s) {
         T one = super.getOne(s);
         doFilter(one);
@@ -198,6 +220,7 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
     }
 
     @Override
+    @ClearParamAfterMethod
     public void deleteAllInBatch() {
         if(dataFilterTypeThread.get()!=null&&super.count()!=count()){
             throw new PlatformException("包含没有权限删除的数据!");
@@ -206,6 +229,7 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
     }
 
     @Override
+    @ClearParamAfterMethod
     public void delete(Iterable<? extends T> entities) {
 
         ArrayList<T> entityList = Lists.newArrayList(entities);
@@ -215,12 +239,14 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
     }
 
     @Override
+    @ClearParamAfterMethod
     public void delete(T entity) {
         doFilter(Lists.newArrayList(entity));
         super.delete(entity);
     }
 
     @Override
+    @ClearParamAfterMethod
     public void deleteInBatch(Iterable<T> entities) {
         ArrayList<T> entityList = Lists.newArrayList(entities);
         doFilter(entityList);
@@ -228,6 +254,7 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
     }
 
     @Override
+    @ClearParamAfterMethod
     public <S extends T> List<S> save(Iterable<S> entities) {
         List<S> result = new ArrayList<S>();
 
@@ -245,6 +272,7 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
     }
 
     @Override
+    @ClearParamAfterMethod
     public <S extends T> S save(S entity) {
         S s = super.save(entity);
 
@@ -253,6 +281,7 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
     }
 
     @Override
+    @ClearParamAfterMethod
     public <S extends T> S saveAndFlush(S entity) {
         S s = super.saveAndFlush(entity);
         doFilter(entity);
@@ -288,6 +317,7 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
     }
 
     @Override
+    @ClearParamAfterMethod
     public <S> S executeCommand(Command command) {
         return (S) command.execute(entityManager);
     }
