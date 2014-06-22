@@ -49,18 +49,6 @@ public class ProxyHandler implements InvocationHandler{
 
         Object result = method.invoke(target, args);
 
-//        Class[] argsClass = null;
-//
-//        if(args!=null){
-//            argsClass = new Class[args.length];
-//            for(int i=0;i<args.length;i++){
-//
-//                ParameterizedType
-//
-//                argsClass[i] = args[i].getClass().getp;
-//            }
-//        }
-
         Method platformImplMethod = target.getClass().getMethod(method.getName(),method.getParameterTypes());
 
         if(platformImplMethod.isAnnotationPresent(ClearParamAfterMethod.class)){
