@@ -56,7 +56,7 @@ public abstract class BaseServiceImpl<T extends BaseModel> implements BaseServic
             PlatformJpaRepository jpaRepository = (PlatformJpaRepository) applicationContext.getBean(beanName);
 
             //如果当前repository的操作model类 跟 当前泛型类一致 , 则将当前respository 作为当前service的操作主repository
-            if(currentEntityClass.isAssignableFrom(jpaRepository.getEntityClass())){
+            if(currentEntityClass.equals(jpaRepository.getEntityClass())){
                 repository = jpaRepository;
                 break;
             }
