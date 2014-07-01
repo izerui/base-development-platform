@@ -28,6 +28,7 @@ import org.springframework.data.jpa.repository.support.JpaEntityInformationSuppo
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.util.Assert;
 import xxx.yyy.framework.common.PlatformException;
+import xxx.yyy.sys.base.context.SessionVariable;
 import xxx.yyy.sys.base.context.SystemContextHolder;
 import xxx.yyy.sys.base.jpa.PlatformJpaRepository;
 import xxx.yyy.sys.base.jpa.cmd.Command;
@@ -289,6 +290,11 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
     }
 
     private <S extends T> void doFilter(Collection<S> entityList){
+
+        if(null==entityList){
+            return;
+        }
+
         if(null!= dataFilterTypeThread.get()){
             Collection<String> ids = Collections2.transform(entityList,new Function<S, String>() {
                 @Override
@@ -303,6 +309,11 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
     }
 
     private <S extends T> void doFilter(S entity){
+
+        if(null==entity){
+            return;
+        }
+
         if(null!= dataFilterTypeThread.get()){
             if (count("id = ?1",entity.getId())==0) {
                 throw new PlatformException("没有权限!");
@@ -415,9 +426,9 @@ public class PlatformRepositoryImpl<T extends Idable> extends SimpleJpaRepositor
             //数据规则ql 以 or 连接
             if(null!= dataFilterTypeThread.get()){
                 String filterRuleCondition = "";
-                FilterContext context = SystemContextHolder.getSessionContext();
+                SessionVariable context = SystemContextHolder.getSessionContext();
                 if(context!=null){
-                    filterRuleCondition = join(context.getFilterRuleJpqlList(getEntityClass(), dataFilterTypeThread.get() , orgIdThread.get())," or ");
+                    filterRuleCondition = join(context.getFilterRuleJpqlList(getEntityClass(), dataFilterTypeThread.get() , context.getOrgContext().getOrgId())," or ");
                 }
 
                 //如果 规则条件返回 null 或者 "" 则 组装 为 (1=1) 否则 (fs=?1 or fs=?2 or fs=?3)
