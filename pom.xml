@@ -15,7 +15,6 @@
         <module>platform-test/web-example</module>
         <module>platform-test/jbpm4.4-integration</module>
         <module>platform-test/activiti5-integration</module>
-        <module>platform-test/platform-test-config</module>
     </modules>
 
 	<build>
